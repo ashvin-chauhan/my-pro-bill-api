@@ -5,3 +5,17 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+# Create default role
+["Super Admin", "Comapny Admin", "Worker", "Customer"]
+	.map { |role| Role.find_or_create_by(name: role) }
+
+[
+["super_admin@gmail.com", "SuperAdmin", "super_admin@gmail.com", "hello123"],
+]
+.map { |email, username, uid, password| 
+	User.find_or_create_by!(email: email, username: username) do |user|
+		user.password = password
+		user.password_confirmation = password
+	end
+}
