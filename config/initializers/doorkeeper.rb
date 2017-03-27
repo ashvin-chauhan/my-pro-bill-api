@@ -160,3 +160,6 @@ Doorkeeper::JWT.configure do
   # defaults to nil
   encryption_method :hs512
 end
+
+
+Doorkeeper::OAuth::TokenResponse.send :prepend, CustomTokenResponse
