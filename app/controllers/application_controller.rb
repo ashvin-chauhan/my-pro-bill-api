@@ -1,5 +1,20 @@
 class ApplicationController < ActionController::API
+  before_action :doorkeeper_authorize!
 
+  # For API testing only
+  def users_list
+    render json: User.all
+  end
+
+  def doorkeeper_unauthorized_render_options(error: nil)
+    { json: { error: "You are not authorized" } }
+  end
+
+  private
+
+  def current_resource_owner
+    User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+  end
   # def authenticate_current_user
   #   head :unauthorized if get_current_user.nil?
   # end
