@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   end
   devise_for :users
 
-  resources :client_types, except: [:new, :edit, :show]
+  resources :client_types, except: [:new, :edit]
 
   # For API testing only
   get "application/users_list"
