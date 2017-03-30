@@ -4,10 +4,7 @@ Rails.application.routes.draw do
   end
   devise_for :users
 
-  post 'client_type/save' => "client_types#create"
-  put 'client_type/edit/:id' => "client_types#update"
-  delete 'client_type/delete/:id' => "client_types#destroy"
-  get 'client_type/list' => "client_types#index"
+  resources :client_types, except: [:new, :edit, :show]
 
   # For API testing only
   get "application/users_list"
