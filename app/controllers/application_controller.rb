@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :doorkeeper_authorize!
+  include ExceptionHandler
 
   # For API testing only
   def users_list
