@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170329111832) do
+=======
+ActiveRecord::Schema.define(version: 20170329112956) do
+>>>>>>> ce7e04c1abeb6da34a5408a995a01380774b0af1
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "client_types", force: :cascade do |t|
+    t.string   "client_type_name"
+    t.text     "description"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", null: false

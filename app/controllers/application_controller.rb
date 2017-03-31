@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :doorkeeper_authorize!
+  include ExceptionHandler
 
   # For API testing only
   before_action :configure_permitted_parameters, if: :devise_controller?
