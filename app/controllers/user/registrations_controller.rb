@@ -12,7 +12,6 @@ class User::RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
     if resource.save
-      yield resource if block_given?
       if resource.persisted?
         if resource.active_for_authentication?
           sign_up(resource_name, resource)
@@ -22,10 +21,9 @@ class User::RegistrationsController < Devise::RegistrationsController
           render json: resource, status: :ok
         end
       else
-        respond_with resource
+        # respond_with resource
+        render json: { error: resource.errors.full_messages }
       end
-    else
-      render json: { error: resource.errors.full_messages }
     end
   end
 
@@ -35,14 +33,22 @@ class User::RegistrationsController < Devise::RegistrationsController
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
+
+    resource_updated = update_resource(resource, account_update_params)
+    if resource_updated
+      render json: resource, status: :ok
+    else
+      render json: { error: resource.errors.full_messages }
+    end
+  end
 
   # DELETE /resource
-  # def destroy
-  #   super
-  # end
+  def destroy
+    resource.destroy
+    render json: resource, status: :ok
+  end
 
   # GET /resource/cancel
   # Forces the session data which is usually expired after sign
@@ -53,7 +59,7 @@ class User::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  protected
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
@@ -74,4 +80,12 @@ class User::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+  def authenticate_scope!
+    # send(:"authenticate_#{resource_name}!", force: true)
+    self.resource = User.find(params[:id])
+  end
+
+  def update_resource(resource, params)
+    resource.update_without_password(params)
+  end
 end
