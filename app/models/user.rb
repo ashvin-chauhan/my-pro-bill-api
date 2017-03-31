@@ -8,6 +8,9 @@ class User < ActiveRecord::Base
   validates :first_name, :last_name,:presence => true
   # validates_confirmation_of :password
 
+  has_many  :users_client_types ,dependent: :destroy
+  has_many  :client_types , through: :users_client_types
+
   def password_required?
     if confirmed?
     	super
