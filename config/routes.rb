@@ -2,7 +2,16 @@ Rails.application.routes.draw do
   use_doorkeeper do
   	skip_controllers :applications, :authorized_applications
   end
-  devise_for :users
+
+  devise_for :users, controllers: {
+    registrations: 'user/registrations',
+    passwords: 'user/passwords',
+    confirmations: 'user/confirmations'
+  }
+
+ 	devise_scope :user do
+    patch "/confirm" => "user/confirmations#confirm"
+  end
 
   resources :client_types, except: [:new, :edit]
 

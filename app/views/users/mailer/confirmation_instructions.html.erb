@@ -1,0 +1,9 @@
+<p>Hello <%= @resource.first_name %></p>
+<p>Your accoutn has been successfully created.</p>
+
+Company Name : <%= @resource.company %><br>
+Subdomain: <%= @resource.subdomain %></br>
+Email: <%= @resource.email %></br>
+
+<p><%= link_to 'Activate Now', @resource.subdomain + ".lvh.me:4200" + "/activate_account/" + @token,target: "_blank" %></p>
+

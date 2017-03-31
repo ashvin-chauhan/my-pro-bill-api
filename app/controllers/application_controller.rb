@@ -3,12 +3,20 @@ class ApplicationController < ActionController::API
   include ExceptionHandler
 
   # For API testing only
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
   def users_list
     render json: User.all
   end
 
   def doorkeeper_unauthorized_render_options(error: nil)
     { json: { error: "You are not authorized" } }
+  end
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name, :email,:subdomain,:phone,:company])
   end
 
   private
