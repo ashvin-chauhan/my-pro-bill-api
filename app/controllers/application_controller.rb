@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :doorkeeper_authorize!
-  # around_action :handle_exceptions
+  around_action :handle_exceptions
 
   # For API testing only
   before_action :configure_permitted_parameters, if: :devise_controller?
