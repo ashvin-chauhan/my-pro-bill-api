@@ -4,12 +4,21 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,:confirmable
 
+  # Validations
   validates :subdomain, :company, :phone ,:presence => true, :uniqueness => true
   validates :first_name, :last_name,:presence => true
-  # validates_confirmation_of :password
 
+  # Associations
   has_many  :users_client_types ,dependent: :destroy
   has_many  :client_types , through: :users_client_types
+  has_many :roles_user, dependent: :destroy
+  has_many :roles, through: :roles_user
+
+  # Scopes
+  scope :super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
+  scope :clients, -> { joins(:roles).where(roles: {name: "Client Admin"}) }
+  scope :workers, -> { joins(:roles).where(roles: {name: "Worker"}) }
+  scope :customers, -> { joins(:roles).where(roles: {name: "Customer"}) }
 
   def password_required?
     if confirmed?
@@ -17,6 +26,11 @@ class User < ActiveRecord::Base
     else
     	false
     end
+  end
+
+  def role_names=(role)
+    roles = Role.where("name IN (?)", role)
+    self.roles << roles
   end
 
   def password_match?

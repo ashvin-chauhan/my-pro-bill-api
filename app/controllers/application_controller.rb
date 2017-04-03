@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :doorkeeper_authorize!
-  include ExceptionHandler
+  # around_action :handle_exceptions
 
   # For API testing only
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -16,8 +16,8 @@ class ApplicationController < ActionController::API
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name, :email,:subdomain,:phone,:company,client_type_ids: []])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :email,:subdomain,:phone,:company,client_type_ids: []])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name, :email, :subdomain, :phone, :company,client_type_ids: [], role_names: []])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :email, :subdomain, :phone, :company, client_type_ids: []])
   end
 
   private
@@ -25,6 +25,21 @@ class ApplicationController < ActionController::API
   def current_resource_owner
     User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
   end
+
+  # Catch exception and return JSON-formatted error
+  def handle_exceptions
+    begin
+      yield
+    rescue ActiveRecord::RecordNotFound => e
+      status = 404
+    rescue ActiveRecord::RecordInvalid => e
+      status = 403
+    rescue Exception => e
+      status = 500
+    end
+    render json: { error: e.message }, status: status unless e.class == NilClass
+  end
+
   # def authenticate_current_user
   #   head :unauthorized if get_current_user.nil?
   # end
