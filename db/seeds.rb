@@ -7,15 +7,16 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 # Create default role
-["Super Admin", "Comapny Admin", "Worker", "Customer"]
-	.map { |role| Role.find_or_create_by(name: role) }
+["Super Admin", "Client Admin", "Worker", "Customer"]
+  .map { |role| Role.find_or_create_by(name: role) }
 
 [
-["super_admin@gmail.com", "SuperAdmin", "super_admin@gmail.com", "hello123"],
+["super_admin@gmail.com", "SuperAdmin", "hello123", "SuperAdmin", 'SuperAdmin', '9999999999', 'SuperAdmin', 'SuperAdmin'],
 ]
-.map { |email, username, uid, password| 
-	User.find_or_create_by!(email: email, username: username) do |user|
-		user.password = password
-		user.password_confirmation = password
-	end
+.map { |email, username, password, subdomain, company, phone, first_name, last_name|
+  User.find_or_create_by!(email: email, username: username, subdomain: subdomain, company: company, phone: phone, first_name: first_name, last_name: last_name) do |user|
+    user.roles << Role.where(name: 'Super Admin')
+    user.password = password
+    user.password_confirmation = password
+  end
 }
