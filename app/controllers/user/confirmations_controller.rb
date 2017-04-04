@@ -3,8 +3,9 @@ class User::ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
   def confirm
-    self.resource = resource_class.find_by_confirmation_token(params[resource_name][:confirmation_token])
-    if params[resource_name][:confirmation_token].present? && self.resource.present?
+    if params[resource_name].present? && params[resource_name][:confirmation_token].present? && request.subdomain.present?
+      self.resource = resource_class.find_by(confirmation_token: params[resource_name][:confirmation_token], subdomain: request.subdomain)
+      if self.resource.present?
         resource.password = params[resource_name][:password]
         resource.password_confirmation = params[resource_name][:password_confirmation]
         if resource.valid? && resource.password_match?
@@ -14,10 +15,14 @@ class User::ConfirmationsController < Devise::ConfirmationsController
         else
          render json: {error: resource.errors.full_messages}, status: :unprocessable_entity
         end
+      else
+        render json: { error: "Confirmation token and subdomain combination is invalid." }, status: :unprocessable_entity
+      end
     else
-      render json: { error: "Token invalid" }, status: :unprocessable_entity
+      render json: { error: "Please supply valid parameters" }, status: 404
     end
   end
+
   # GET /resource/confirmation/new
   # def new
   #   super
