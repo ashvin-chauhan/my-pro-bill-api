@@ -21,6 +21,6 @@ class UsersController < ApplicationController
 
   # GET  /users/:id
   def show
-    render json: @resource, include: ['roles'], status: 200
+    render json: @resource, include: ['roles', 'client_types'], status: 200
   end
 end
