@@ -1,4 +1,5 @@
-class UserListingsController < ApplicationController
+class UsersController < ApplicationController
+  include InheritAction
 
 	# GET  /clients
   def clients
@@ -16,5 +17,10 @@ class UserListingsController < ApplicationController
   def customers
   	customers = User.customers
   	render json: customers, status: 200
+  end
+
+  # GET  /users/:id
+  def show
+    render json: @resource, include: ['roles'], status: 200
   end
 end

@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   has_many  :client_types , through: :users_client_types
   has_many :roles_user, dependent: :destroy
   has_many :roles, through: :roles_user
+  has_many :oauth_access_tokens, dependent: :destroy, foreign_key: :resource_owner_id
 
   # Scopes
   scope :super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
