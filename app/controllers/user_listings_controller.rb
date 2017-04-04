@@ -1,4 +1,4 @@
-class UserListingsController < ApplicationController
+class UsersController < ApplicationController
 
 	# GET  /clients
   def clients

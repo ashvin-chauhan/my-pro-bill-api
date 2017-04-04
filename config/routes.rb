@@ -16,9 +16,11 @@ Rails.application.routes.draw do
   resources :client_types, except: [:new, :edit]
 
   # Role wise users listing
-  get "/clients" => "user_listings#clients"
-  get "/workers" => "user_listings#workers"
-  get "/customers" => "user_listings#customers"
+  resources :users do
+    # get "/clients"
+    # get "/workers"
+    # get "/customers"
+  end
 
   # For API testing only
   get "application/users_list"
