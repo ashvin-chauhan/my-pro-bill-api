@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170331103624) do
+ActiveRecord::Schema.define(version: 20170404091609) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,13 +75,14 @@ ActiveRecord::Schema.define(version: 20170331103624) do
     t.index ["user_id"], name: "index_roles_users_on_user_id", using: :btree
   end
 
-  create_table "user_client_types", force: :cascade do |t|
-    t.integer  "user_id"
+  create_table "services", force: :cascade do |t|
+    t.string   "service_name"
     t.integer  "client_type_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
-    t.index ["client_type_id"], name: "index_user_client_types_on_client_type_id", using: :btree
-    t.index ["user_id"], name: "index_user_client_types_on_user_id", using: :btree
+    t.datetime "deleted_at"
+    t.index ["client_type_id"], name: "index_services_on_client_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_services_on_deleted_at", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -130,8 +131,7 @@ ActiveRecord::Schema.define(version: 20170331103624) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
-  add_foreign_key "user_client_types", "client_types"
-  add_foreign_key "user_client_types", "users"
+  add_foreign_key "services", "client_types"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"
 end
