@@ -22,8 +22,10 @@ class User::RegistrationsController < Devise::RegistrationsController
         end
       else
         # respond_with resource
-        render json: { error: resource.errors.full_messages }
+        render json: { error: resource.errors.full_messages }, status: :unprocessable_entity
       end
+    else
+      render json: { error: resource.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

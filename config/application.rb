@@ -34,7 +34,7 @@ module MyProBillApi
         origins '*'
         resource '*',
         :headers => :any,
-        :methods => [:get, :post, :options, :delete, :put]
+        :methods => [:get, :post, :options, :delete, :put, :patch]
       end
     end
 
