@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170404091609) do
+ActiveRecord::Schema.define(version: 20170404105136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "client_services", force: :cascade do |t|
+    t.string   "service_name"
+    t.integer  "user_id"
+    t.integer  "client_type_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["client_type_id"], name: "index_client_services_on_client_type_id", using: :btree
+    t.index ["user_id"], name: "index_client_services_on_user_id", using: :btree
+  end
 
   create_table "client_types", force: :cascade do |t|
     t.string   "client_type_name"
@@ -125,6 +135,8 @@ ActiveRecord::Schema.define(version: 20170404091609) do
     t.index ["user_id"], name: "index_users_client_types_on_user_id", using: :btree
   end
 
+  add_foreign_key "client_services", "client_types"
+  add_foreign_key "client_services", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
