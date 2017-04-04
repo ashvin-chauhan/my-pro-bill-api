@@ -8,7 +8,7 @@ class User::ConfirmationsController < Devise::ConfirmationsController
       if self.resource.present?
         resource.password = params[resource_name][:password]
         resource.password_confirmation = params[resource_name][:password_confirmation]
-        if resource.valid? && resource.password_match?
+        if resource.password_match? && resource.valid?
           resource.update_attributes(permitted_params)
           resource.active_user
           render json: resource, status: :ok

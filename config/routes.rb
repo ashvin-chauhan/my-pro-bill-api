@@ -19,7 +19,11 @@ Rails.application.routes.draw do
   get "/clients" => "users#clients"
   get "/workers" => "users#workers"
   get "/customers" => "users#customers"
-  resources :users, only: [:show, :index]
+  resources :users, only: [:show, :index] do
+    member do
+      patch 'update_password'
+    end
+  end
 
   # For API testing only
   get "application/users_list"
