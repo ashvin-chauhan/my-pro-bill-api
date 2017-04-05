@@ -2,7 +2,7 @@ class ServicesController < ApplicationController
   include InheritAction
   before_action :get_client_type, only: [:create]
 
-  # POST  /client_types/:client_type_id/services
+  # POST  /services
   def create
     @resource = @client_type.services.new(resource_params)
     super
@@ -11,6 +11,6 @@ class ServicesController < ApplicationController
   private
 
   def get_client_type
-    @client_type = ClientType.find(params[:client_type_id])
+    @client_type = ClientType.find(params[:service][:client_type_id])
   end
 end

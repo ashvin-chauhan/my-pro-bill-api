@@ -13,9 +13,7 @@ Rails.application.routes.draw do
     patch "/confirm" => "user/confirmations#confirm"
   end
 
-  resources :client_types, except: [:new, :edit] do
-    resources :services, only: [:create]
-  end
+  resources :client_types, except: [:new, :edit]
 
   # Role wise users listing
   get "/clients" => "users#clients"
@@ -28,7 +26,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :services, only: [:update, :destroy, :show]
+  resources :services, only: [:create, :update, :destroy, :show]
 
   # For API testing only
   get "application/users_list"
