@@ -21,8 +21,7 @@ Rails.application.routes.draw do
   get "/customers" => "users#customers"
 
   resources :users, only: [:show, :index]
-
-  resources :services, only: [:create, :update, :destroy, :show]
+  resources :services
 
   # For API testing only
   get "application/users_list"
