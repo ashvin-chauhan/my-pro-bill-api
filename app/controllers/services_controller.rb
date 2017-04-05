@@ -8,6 +8,12 @@ class ServicesController < ApplicationController
     super
   end
 
+  # GET /services
+  def index
+    resource = resource_class.includes(:client_type)
+    render json: resource, include: ['client_type'], status: :ok
+  end
+
   private
 
   def get_client_type
