@@ -4,9 +4,19 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,:confirmable
 
-  # Validations
+  # Validations  
+  PASSWORD_FORMAT = /\A
+    (?=.{8,})          # Must contain 8 or more characters
+    (?=.*\d)           # Must contain a digit
+    (?=.*[a-z])        # Must contain a lower case character
+    (?=.*[A-Z])        # Must contain an upper case character
+    (?=.*[[:^alnum:]]) # Must contain a symbol
+  /x
+
   validates :subdomain, :company, :phone ,:presence => true, :uniqueness => true
   validates :first_name, :last_name,:presence => true
+  validates :password, allow_nil: true, length: {in: Devise.password_length }, format: { with: PASSWORD_FORMAT, message: "Must in format of upper and lower case mix with at least 1 number and 1 special character." }
+  validates_confirmation_of :password
 
   # Associations
   has_many  :users_client_types ,dependent: :destroy
