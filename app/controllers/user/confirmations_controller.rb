@@ -1,5 +1,5 @@
 class User::ConfirmationsController < Devise::ConfirmationsController
-
+  skip_before_action :doorkeeper_authorize!
   respond_to :json
 
   def confirm
@@ -8,9 +8,10 @@ class User::ConfirmationsController < Devise::ConfirmationsController
       if self.resource.present?
         resource.password = params[resource_name][:password]
         resource.password_confirmation = params[resource_name][:password_confirmation]
-        if resource.valid? && resource.password_match?
+        if resource.password_match? && resource.valid?
           resource.update_attributes(permitted_params)
           resource.active_user
+          UserMailer.user_confirmation(resource).deliver_now
           render json: resource, status: :ok
         else
          render json: {error: resource.errors.full_messages}, status: :unprocessable_entity

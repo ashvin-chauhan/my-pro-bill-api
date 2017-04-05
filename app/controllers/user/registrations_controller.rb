@@ -11,7 +11,7 @@ class User::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     build_resource(sign_up_params)
-    if resource.save
+    if resource.save!
       if resource.persisted?
         if resource.active_for_authentication?
           sign_up(resource_name, resource)
@@ -22,8 +22,10 @@ class User::RegistrationsController < Devise::RegistrationsController
         end
       else
         # respond_with resource
-        render json: { error: resource.errors.full_messages }
+        render json: { error: resource.errors.full_messages }, status: :unprocessable_entity
       end
+    else
+      render json: { error: resource.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

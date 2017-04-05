@@ -20,7 +20,13 @@ Rails.application.routes.draw do
   get "/workers" => "users#workers"
   get "/customers" => "users#customers"
 
-  resources :users, only: [:show, :index]
+  resources :users, only: [:show, :index] do
+    member do
+      patch 'update_password'
+      post 'service_clone'
+    end
+  end
+
   resources :services
 
   # For API testing only
