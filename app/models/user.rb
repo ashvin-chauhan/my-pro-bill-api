@@ -1,10 +1,10 @@
 class User < ActiveRecord::Base
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,:confirmable
 
-  # Validations  
+  attr_accessor :role_names
+
+  # Validations
   PASSWORD_FORMAT = /\A
     (?=.{8,})          # Must contain 8 or more characters
     (?=.*\d)           # Must contain a digit
@@ -13,10 +13,10 @@ class User < ActiveRecord::Base
     (?=.*[[:^alnum:]]) # Must contain a symbol
   /x
 
-  validates :subdomain, :company, :phone ,:presence => true, :uniqueness => true
-  validates :first_name, :last_name,:presence => true
+  validates :subdomain, :company ,:presence => true, :uniqueness => true, if: :check_role?
+  validates :phone, :presence => true, :uniqueness => true
+  validates :first_name, :last_name, :presence => true
   validates :password, allow_nil: true, length: {in: Devise.password_length }, format: { with: PASSWORD_FORMAT, message: "Must in format of upper and lower case mix with at least 1 number and 1 special character." }
-  validates_confirmation_of :password
 
   # Associations
   has_many  :users_client_types ,dependent: :destroy
@@ -26,12 +26,45 @@ class User < ActiveRecord::Base
   has_many  :roles_user, dependent: :destroy
   has_many  :roles, through: :roles_user
   has_many  :oauth_access_tokens, dependent: :destroy, foreign_key: :resource_owner_id
+  has_one   :customer, dependent: :destroy
+
+  # Get list of clients of specific customer
+  has_many  :customers_clients, :class_name => "ClientsCustomer", :foreign_key => "customer_id", dependent: :destroy
+  has_many  :clients, through: :customers_clients
+
+  # Get list of customers of specific client
+  has_many  :clients_customers, :class_name => "ClientsCustomer", :foreign_key => "client_id", dependent: :destroy
+  has_many  :customers, through: :clients_customers
+
+  has_many  :customers_service_prices, :foreign_key => "customer_id", dependent: :destroy
+  accepts_nested_attributes_for :customer, :customers_service_prices
 
   # Scopes
   scope :super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
   scope :clients, -> { joins(:roles).where(roles: {name: "Client Admin"}) }
   scope :workers, -> { joins(:roles).where(roles: {name: "Worker"}) }
   scope :customers, -> { joins(:roles).where(roles: {name: "Customer"}) }
+
+  # Instance method
+  def super_admin?
+    self.roles.find_by(name: 'Super Admin') ? true : false
+  end
+
+  def client?
+    self.roles.find_by(name: 'Client Admin') ? true : false
+  end
+
+  def worker?
+    self.roles.find_by(name: 'Worker') ? true : false
+  end
+
+  def customer?
+    self.roles.find_by(name: 'Customer') ? true : false
+  end
+
+  def check_role?
+    (role_names & ['Client Admin', 'Worker']).present? ? true : false
+  end
 
   def password_required?
     if confirmed?
@@ -44,6 +77,7 @@ class User < ActiveRecord::Base
   def role_names=(role)
     roles = Role.where("name IN (?)", role)
     self.roles << roles
+    @role_names = role
   end
 
   def password_match?
@@ -55,6 +89,13 @@ class User < ActiveRecord::Base
 
   def active_user
     self.update_attributes(active:true)
+  end
+
+  before_commit do
+    if self.customer?
+      password = Devise.friendly_token.first(8)
+      skip_confirmation!
+    end
   end
 
 end
