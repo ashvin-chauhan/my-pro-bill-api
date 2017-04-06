@@ -27,6 +27,10 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :users, only: [],path: "/clients" do
+    resources :client_services
+  end
+
   resources :services
 
   # For API testing only
