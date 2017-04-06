@@ -52,7 +52,8 @@ class User::RegistrationsController < Devise::RegistrationsController
   # DELETE /resource
   def destroy
     resource.destroy
-    render json: resource, status: :ok
+
+    head 200
   end
 
   # GET /resource/cancel

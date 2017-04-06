@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   def show
     render json: @resource, include: ['roles', 'client_types'], status: 200
   end
-  
+
   # PATCH  /users/update_password
   def update_password
     @user = User.find(params[:user][:id])
