@@ -15,11 +15,14 @@ class User::RegistrationsController < Devise::RegistrationsController
       if resource.persisted?
         if resource.active_for_authentication?
           sign_up(resource_name, resource)
-          render json: resource, status: :ok
         else
           expire_data_after_sign_in!
-          render json: resource, status: :ok
         end
+
+        if resource.customer?
+          render_customer_data and return
+        end
+        render json: resource, status: :ok
       else
         # respond_with resource
         render json: { error: resource.errors.full_messages }, status: :unprocessable_entity
@@ -60,6 +63,12 @@ class User::RegistrationsController < Devise::RegistrationsController
   # def cancel
   #   super
   # end
+
+  private
+
+  def render_customer_data
+    render json: resource, include: ['customer', 'roles', 'clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: :ok
+  end
 
   protected
 

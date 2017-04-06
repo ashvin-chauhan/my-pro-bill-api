@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170404105136) do
+ActiveRecord::Schema.define(version: 20170406065720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,42 @@ ActiveRecord::Schema.define(version: 20170404105136) do
     t.text     "description"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+  end
+
+  create_table "clients_customers", force: :cascade do |t|
+    t.integer  "client_id"
+    t.integer  "customer_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string   "nick_name"
+    t.integer  "billing_period"
+    t.boolean  "should_print_invoice",  default: false, null: false
+    t.boolean  "has_email_invoice",     default: false, null: false
+    t.integer  "billing_notifications"
+    t.integer  "service_notifications"
+    t.text     "address"
+    t.string   "country"
+    t.string   "state"
+    t.string   "city"
+    t.integer  "zip"
+    t.string   "alternate_phone"
+    t.string   "alternate_email"
+    t.integer  "user_id"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.index ["user_id"], name: "index_customers_on_user_id", using: :btree
+  end
+
+  create_table "customers_service_prices", force: :cascade do |t|
+    t.decimal  "price",             precision: 8, scale: 2
+    t.integer  "client_service_id"
+    t.integer  "customer_id"
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.index ["client_service_id"], name: "index_customers_service_prices_on_client_service_id", using: :btree
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -95,6 +131,15 @@ ActiveRecord::Schema.define(version: 20170404105136) do
     t.index ["deleted_at"], name: "index_services_on_deleted_at", using: :btree
   end
 
+  create_table "user_client_types", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "client_type_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["client_type_id"], name: "index_user_client_types_on_client_type_id", using: :btree
+    t.index ["user_id"], name: "index_user_client_types_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "username",               default: "",    null: false
@@ -137,6 +182,8 @@ ActiveRecord::Schema.define(version: 20170404105136) do
 
   add_foreign_key "client_services", "client_types"
   add_foreign_key "client_services", "users"
+  add_foreign_key "customers", "users"
+  add_foreign_key "customers_service_prices", "client_services"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
@@ -144,6 +191,8 @@ ActiveRecord::Schema.define(version: 20170404105136) do
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
   add_foreign_key "services", "client_types"
+  add_foreign_key "user_client_types", "client_types"
+  add_foreign_key "user_client_types", "users"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"
 end
