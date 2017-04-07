@@ -3,34 +3,38 @@ class UsersController < ApplicationController
   include InheritAction
   before_action :get_user, only: [:service_clone]
 
-	# GET  /clients
+  # GET  /clients
   def clients
-  	clients = User.clients
-  	render json: clients, status: 200
+    clients = User.clients
+    render json: clients, include: ['client_types'], status: 200
   end
 
   # GET  /workers
   def workers
-  	workers = User.workers
-  	render json: workers, status: 200
+    workers = User.workers
+    render json: workers, status: 200
   end
 
   # GET  /customers
   def customers
-  	customers = User.customers
-  	render json: customers, status: 200
+    customers = User.customers
+    render json: customers, include: ['customer', 'clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
   end
 
   # GET  /users/:id
   def show
-    render json: @resource, include: ['roles', 'client_types'], status: 200
+    if @resource.client?
+      render json: @resource, include: ['roles', 'client_types'], status: 200
+    elsif @resource.customer?
+      render json: @resource, include: ['customer', 'roles', 'clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
+    end
   end
-  
+
   # PATCH  /users/update_password
   def update_password
     @user = User.find(params[:user][:id])
     if @user.update_with_password(user_params)
-      render json: {message: "Password updated successfully"}, status: :ok
+      render json: {message: "Password updated successfully"}, status: 201
     else
       render json: {error: @user.errors.full_messages}, status: :unprocessable_entity
     end

@@ -19,9 +19,7 @@ class User::RegistrationsController < Devise::RegistrationsController
           expire_data_after_sign_in!
         end
 
-        if resource.customer?
-          render_customer_data and return
-        end
+        render_customer_data and return if resource.customer?
         render json: resource, status: :ok
       else
         # respond_with resource
@@ -39,10 +37,12 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # PUT /resource
   def update
+    resource.skip_confirmation_notification! if resource.customer?
     prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
     resource_updated = update_resource(resource, account_update_params)
     if resource_updated
+      render_customer_data and return if resource.customer?
       render json: resource, status: :ok
     else
       render json: { error: resource.errors.full_messages }
@@ -52,7 +52,8 @@ class User::RegistrationsController < Devise::RegistrationsController
   # DELETE /resource
   def destroy
     resource.destroy
-    render json: resource, status: :ok
+
+    head 200
   end
 
   # GET /resource/cancel

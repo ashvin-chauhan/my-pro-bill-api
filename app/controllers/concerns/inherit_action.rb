@@ -7,7 +7,7 @@ module InheritAction
 
 
   def index
-    render json: resource_class.all, status: :ok
+    render json: resource_class.all, status: 200
   end
 
   def create
@@ -15,7 +15,7 @@ module InheritAction
 
     if @resource.save!
       yield @resource if block_given?
-      render json: @resource, status: :ok
+      render json: @resource, status: 201
     else
       yield @resource if block_given?
       render json: {error: @resource.errors.full_messages}, status: :unprocessable_entity
@@ -23,13 +23,13 @@ module InheritAction
   end
 
   def show
-    render json: @resource, status: :ok
+    render json: @resource, status: 200
   end
 
   def update
     if @resource.update_attributes(resource_params)
       yield @resource if block_given?
-      render json: @resource, status: :ok
+      render json: @resource, status: 201
     else
       yield @resource if block_given?
       render json: {error: @resource.errors.full_messages}, status: :unprocessable_entity

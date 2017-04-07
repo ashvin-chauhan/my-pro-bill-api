@@ -17,8 +17,10 @@ class ApplicationController < ActionController::API
     ])
 
     devise_parameter_sanitizer.permit(
-      :account_update, keys: [:first_name, :last_name, :email, :subdomain, :phone, :company, client_type_ids: []]
-    )
+      :account_update, keys: [:first_name, :last_name, :email, :subdomain, :phone, :company, :active, client_type_ids: [],
+      customer_attributes: [:nick_name, :billing_period, :should_print_invoice, :billing_notifications, :service_notifications, :address, :city, :state, :country, :zip, :alternate_phone, :alternate_email],
+      customers_service_prices_attributes: [:id, :client_service_id, :price, :_destroy]
+    ])
   end
 
   private
