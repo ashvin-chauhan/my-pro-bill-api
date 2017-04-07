@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406065720) do
+ActiveRecord::Schema.define(version: 20170407090707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,19 +40,11 @@ ActiveRecord::Schema.define(version: 20170406065720) do
   end
 
   create_table "customers", force: :cascade do |t|
-    t.string   "nick_name"
     t.integer  "billing_period"
     t.boolean  "should_print_invoice",  default: false, null: false
     t.boolean  "has_email_invoice",     default: false, null: false
     t.integer  "billing_notifications"
     t.integer  "service_notifications"
-    t.text     "address"
-    t.string   "country"
-    t.string   "state"
-    t.string   "city"
-    t.integer  "zip"
-    t.string   "alternate_phone"
-    t.string   "alternate_email"
     t.integer  "user_id"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
@@ -165,6 +157,14 @@ ActiveRecord::Schema.define(version: 20170406065720) do
     t.string   "subdomain"
     t.string   "phone"
     t.string   "unconfirmed_email"
+    t.string   "nick_name"
+    t.text     "address"
+    t.string   "country"
+    t.string   "state"
+    t.string   "city"
+    t.integer  "zip"
+    t.string   "alternate_phone"
+    t.string   "alternate_email"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
