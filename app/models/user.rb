@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,:confirmable
+         :recoverable, :rememberable, :trackable, :validatable, :confirmable
 
   attr_accessor :role_names
 
@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
   has_many  :customers, through: :clients_customers
 
   has_many  :customers_service_prices, :foreign_key => "customer_id", dependent: :destroy
-  accepts_nested_attributes_for :customer, :customers_service_prices
+  accepts_nested_attributes_for :customer, :customers_service_prices, allow_destroy: true
 
   # Scopes
   scope :super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
@@ -47,19 +47,19 @@ class User < ActiveRecord::Base
 
   # Instance method
   def super_admin?
-    self.roles.find_by(name: 'Super Admin') ? true : false
+    roles.find_by(name: 'Super Admin') ? true : false
   end
 
   def client?
-    self.roles.find_by(name: 'Client Admin') ? true : false
+    roles.find_by(name: 'Client Admin') ? true : false
   end
 
   def worker?
-    self.roles.find_by(name: 'Worker') ? true : false
+    roles.find_by(name: 'Worker') ? true : false
   end
 
   def customer?
-    self.roles.find_by(name: 'Customer') ? true : false
+    roles.find_by(name: 'Customer') ? true : false
   end
 
   def check_role?
@@ -68,9 +68,9 @@ class User < ActiveRecord::Base
 
   def password_required?
     if confirmed?
-    	super
+      super
     else
-    	false
+      false
     end
   end
 
@@ -92,7 +92,7 @@ class User < ActiveRecord::Base
   end
 
   before_commit do
-    if self.customer?
+    if self.customer? && !self.confirmed?
       password = Devise.friendly_token.first(8)
       skip_confirmation!
     end

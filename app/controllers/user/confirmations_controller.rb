@@ -11,6 +11,7 @@ class User::ConfirmationsController < Devise::ConfirmationsController
         if resource.password_match? && resource.valid?
           resource.update_attributes(permitted_params)
           resource.active_user
+          resource.confirm
           UserMailer.user_confirmation(resource).deliver_now
           render json: resource, status: :ok
         else
