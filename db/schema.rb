@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170407121455) do
+ActiveRecord::Schema.define(version: 20170408104202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,9 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "client_type_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.datetime "deleted_at"
     t.index ["client_type_id"], name: "index_client_services_on_client_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_client_services_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_client_services_on_user_id", using: :btree
   end
 
@@ -30,6 +32,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.text     "description"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_client_types_on_deleted_at", using: :btree
   end
 
   create_table "clients_customers", force: :cascade do |t|
@@ -37,6 +41,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "customer_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_clients_customers_on_deleted_at", using: :btree
   end
 
   create_table "clients_workers", force: :cascade do |t|
@@ -44,6 +50,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "worker_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_clients_workers_on_deleted_at", using: :btree
   end
 
   create_table "customers", force: :cascade do |t|
@@ -55,6 +63,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "user_id"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_customers_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_customers_on_user_id", using: :btree
   end
 
@@ -64,7 +74,9 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "customer_id"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
+    t.datetime "deleted_at"
     t.index ["client_service_id"], name: "index_customers_service_prices_on_client_service_id", using: :btree
+    t.index ["deleted_at"], name: "index_customers_service_prices_on_deleted_at", using: :btree
   end
 
   create_table "expense_categories", force: :cascade do |t|
@@ -72,7 +84,9 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "client_id"
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
+    t.datetime "deleted_at"
     t.index ["client_id"], name: "index_expense_categories_on_client_id", using: :btree
+    t.index ["deleted_at"], name: "index_expense_categories_on_deleted_at", using: :btree
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -84,6 +98,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.datetime "created_at",        null: false
     t.datetime "revoked_at"
     t.string   "scopes"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_oauth_access_grants_on_deleted_at", using: :btree
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
   end
 
@@ -110,6 +126,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.string   "scopes",       default: "", null: false
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_oauth_applications_on_deleted_at", using: :btree
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
   end
 
@@ -117,6 +135,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_roles_on_deleted_at", using: :btree
   end
 
   create_table "roles_users", force: :cascade do |t|
@@ -124,6 +144,8 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_roles_users_on_deleted_at", using: :btree
     t.index ["role_id"], name: "index_roles_users_on_role_id", using: :btree
     t.index ["user_id"], name: "index_roles_users_on_user_id", using: :btree
   end
@@ -143,7 +165,9 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "client_type_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.datetime "deleted_at"
     t.index ["client_type_id"], name: "index_user_client_types_on_client_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_user_client_types_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_user_client_types_on_user_id", using: :btree
   end
 
@@ -180,7 +204,9 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "zip"
     t.string   "alternate_phone"
     t.string   "alternate_email"
+    t.datetime "deleted_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+    t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
@@ -191,7 +217,9 @@ ActiveRecord::Schema.define(version: 20170407121455) do
     t.integer  "client_type_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.datetime "deleted_at"
     t.index ["client_type_id"], name: "index_users_client_types_on_client_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_users_client_types_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_users_client_types_on_user_id", using: :btree
   end
 

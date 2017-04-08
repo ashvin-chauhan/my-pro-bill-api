@@ -1,4 +1,5 @@
 class Customer < ApplicationRecord
+  acts_as_paranoid
   belongs_to :user
 
   enum billing_period: {
