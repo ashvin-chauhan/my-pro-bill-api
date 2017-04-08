@@ -12,7 +12,7 @@ class UsersController < ApplicationController
 
   # GET  /clients/:user_id/customers
   def customers
-    render json: @client.customers, include: ['customer', 'customer_clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
+    render json: ActiveModel::Serializer::CollectionSerializer.new(@client.customers, serializer: ClientCustomersAttributesSerializer, roles: false), status: 200
   end
 
   # GET  /clients/:user_id/users
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     if @resource.client?
       render json: @resource, include: ['roles', 'client_types'], status: 200
     elsif @resource.customer?
-      render json: @resource, include: ['customer', 'roles', 'customer_clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
+      render json: @resource, serializer: ClientCustomersAttributesSerializer, roles: true, status: 200
     elsif @resource.worker? || @resource.sub_admin?
       render json: @resource, include: ['roles', 'worker_clients'], :except => [:username, :company, :subdomain], status: 200
     end
