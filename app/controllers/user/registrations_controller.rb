@@ -78,7 +78,7 @@ class User::RegistrationsController < Devise::RegistrationsController
   private
 
   def render_customer_data
-    render json: resource, include: ['customer', 'roles', 'customer_clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: :ok
+    render json: resource, serializer: ClientCustomersAttributesSerializer, roles: true, status: 200
   end
 
   def render_worker_date

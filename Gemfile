@@ -47,3 +47,6 @@ gem 'doorkeeper-jwt'
 
 # For soft delete
 gem "paranoia", "~> 2.2"
+
+# For serialize model attributes
+gem 'active_model_serializers', '~> 0.10.0'
