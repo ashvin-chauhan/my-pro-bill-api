@@ -1,3 +1,4 @@
 class ExpenseCategory < ApplicationRecord
-	belongs_to :client, class_name: 'User', foreign_key: 'client_id' 
+  acts_as_paranoid
+	belongs_to :client, class_name: 'User', foreign_key: 'client_id'
 end
