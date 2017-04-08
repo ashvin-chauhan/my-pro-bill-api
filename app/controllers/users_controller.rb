@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   skip_before_action :doorkeeper_authorize!, only: [:update_password]
   include InheritAction
   before_action :get_user, only: [:service_clone]
+  before_action :get_client, only: [:customers, :client_users]
 
   # GET  /clients
   def clients
@@ -9,16 +10,14 @@ class UsersController < ApplicationController
     render json: clients, include: ['client_types'], status: 200
   end
 
-  # GET  /workers
-  def workers
-    workers = User.workers
-    render json: workers, status: 200
+  # GET  /clients/:user_id/customers
+  def customers
+    render json: @client.customers, include: ['customer', 'customer_clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
   end
 
-  # GET  /customers
-  def customers
-    customers = User.customers
-    render json: customers, include: ['customer', 'clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
+  # GET  /clients/:user_id/users
+  def client_users
+    render json: @client.workers, include: ['roles', 'customer_clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
   end
 
   # GET  /users/:id
@@ -26,7 +25,9 @@ class UsersController < ApplicationController
     if @resource.client?
       render json: @resource, include: ['roles', 'client_types'], status: 200
     elsif @resource.customer?
-      render json: @resource, include: ['customer', 'roles', 'clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
+      render json: @resource, include: ['customer', 'roles', 'customer_clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: 200
+    elsif @resource.worker? || @resource.sub_admin?
+      render json: @resource, include: ['roles', 'worker_clients'], :except => [:username, :company, :subdomain], status: 200
     end
   end
 
@@ -58,6 +59,10 @@ class UsersController < ApplicationController
 
   def get_user
     @user = User.find(params[:id])
+  end
+
+  def get_client
+    @client = User.find(params[:user_id])
   end
 
 end

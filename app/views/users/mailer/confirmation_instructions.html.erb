@@ -1,5 +1,5 @@
 <body marginheight="0" marginwidth="0" leftmargin="0" topmargin="0" bgcolor="#ffffff">
-	<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center" bgcolor="#ffffff">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" align="center" bgcolor="#ffffff">
     <tr>
       <td>
         <table valign="top" align="center" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" style="font-family:Arial, Helvetica, sans-serif;font-size:14px;line-height:16px;color:#000000; border:1px solid #ddd;">
@@ -8,36 +8,57 @@
               <h2 style="color:#ffffff; font-size:22px; padding:15px; margin:0px;">MyProBill</h2>
             </td>
           </tr>
-					<tr>
-					  <td bgcolor="#ffffff" align="left" width="100%" style="padding:20px 15px;border-bottom:1px dashed #ddd;">
-						  <p style="color:#000000; font-size:14px; margin:15px 0px; width:100%; display:block;">
-						  	Hello <%= @resource.first_name %>,
-						  </p>
-						  <p style="color:#000000; font-size:14px; margin:20px 0px 10px; width:100%; display:block;">
-						  	Your accoutn has been successfully created.
-						  </p>
-
-						  <p>Company Name : <%= @resource.company %></p>
-							<p>Subdomain: <%= @resource.subdomain %></p>
-							<p>Email: <%= @resource.email %></p>
-					  </td>
-					</tr>
-					<tr>
-					  <td bgcolor="#ffffff" align="left" width="100%" height="100px" style="padding-left:15px;">
-					    <%= link_to @resource.subdomain + ".lvh.me:4200" + "/active_account/" + @token,target: "_blank" do %>
-								<img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
-					    <% end %>
-					  </td>
-					</tr>
-					<tr>
-					  <td bgcolor="#ffffff" align="left" width="100%" height="50px" style="padding-left:15px;">
-						  <font size="2" color="000">
-						      Thank You,  <br>
-						      MyProBill Team<br><br>
-						  </font>
-					  </td>
-					</tr>
-				</table>
+          <% if @resource.client? %>
+            <tr>
+              <td bgcolor="#ffffff" align="left" width="100%" style="padding:20px 15px;border-bottom:1px dashed #ddd;">
+                <p style="color:#000000; font-size:14px; margin:15px 0px; width:100%; display:block;">
+                  Hello <%= @resource.first_name %>,
+                </p>
+                <p style="color:#000000; font-size:14px; margin:20px 0px 10px; width:100%; display:block;">
+                  Your account has been successfully created.
+                </p>
+                <p>Company Name : <%= @resource.company %></p>
+                <p>Subdomain: <%= @resource.subdomain %></p>
+                <p>Email: <%= @resource.email %></p>
+              </td>
+            </tr>
+            <tr>
+              <td bgcolor="#ffffff" align="left" width="100%" height="100px" style="padding-left:15px;">
+                <%= link_to @resource.subdomain + ".lvh.me:4200" + "/active_account/" + @token, target: "_blank" do %>
+                  <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                <% end %>
+              </td>
+            </tr>
+          <% elsif @resource.worker? || @resource.sub_admin? %>
+            <tr>
+              <td bgcolor="#ffffff" align="left" width="100%" style="padding:20px 15px;border-bottom:1px dashed #ddd;">
+                <p style="color:#000000; font-size:14px; margin:15px 0px; width:100%; display:block;">
+                  Hello <%= @resource.first_name %>,
+                </p>
+                <p style="color:#000000; font-size:14px; margin:20px 0px 10px; width:100%; display:block;">
+                  <b>You are invited in <%= @current_user.company %> Company as <%= @resource.roles.first.try(:name) %>.</b>
+                </p>
+                <p>Email: <%= @resource.email %></p>
+                <p>Last name: <%= @resource.last_name %></p>
+              </td>
+            </tr>
+            <tr>
+              <td bgcolor="#ffffff" align="left" width="100%" height="100px" style="padding-left:15px;">
+                <%= link_to @current_user.subdomain + ".lvh.me:4200" + "/active_account/#{@token}", target: "_blank" do %>
+                  <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          <tr>
+            <td bgcolor="#ffffff" align="left" width="100%" height="50px" style="padding-left:15px;">
+              <font size="2" color="000">
+                  Thank You,  <br>
+                  MyProBill Team<br><br>
+              </font>
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>

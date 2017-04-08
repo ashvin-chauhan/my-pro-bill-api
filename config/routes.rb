@@ -17,8 +17,6 @@ Rails.application.routes.draw do
 
   # Role wise users listing
   get "/clients" => "users#clients"
-  get "/workers" => "users#workers"
-  get "/customers" => "users#customers"
 
   resources :users, only: [:show, :index] do
     member do
@@ -29,6 +27,8 @@ Rails.application.routes.draw do
 
   resources :users, only: [],path: "/clients" do
     resources :client_services
+    get "/customers" => "users#customers"
+    get "/users" => "users#client_users"
   end
 
   resources :services

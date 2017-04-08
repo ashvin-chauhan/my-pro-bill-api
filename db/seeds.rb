@@ -7,7 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 # Create default role
-["Super Admin", "Client Admin", "Worker", "Customer"]
+["Super Admin", "Client Admin", "Worker", "Sub Admin", "Customer"]
   .map { |role| Role.find_or_create_by(name: role) }
 
 [
