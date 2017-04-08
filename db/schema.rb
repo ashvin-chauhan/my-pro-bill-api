@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170407104841) do
+
+ActiveRecord::Schema.define(version: 20170407121455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +66,14 @@ ActiveRecord::Schema.define(version: 20170407104841) do
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
     t.index ["client_service_id"], name: "index_customers_service_prices_on_client_service_id", using: :btree
+  end
+
+  create_table "expense_categories", force: :cascade do |t|
+    t.string   "expense_category_name"
+    t.integer  "client_id"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.index ["client_id"], name: "index_expense_categories_on_client_id", using: :btree
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -130,15 +139,6 @@ ActiveRecord::Schema.define(version: 20170407104841) do
     t.index ["deleted_at"], name: "index_services_on_deleted_at", using: :btree
   end
 
-  create_table "user_client_types", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "client_type_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.index ["client_type_id"], name: "index_user_client_types_on_client_type_id", using: :btree
-    t.index ["user_id"], name: "index_user_client_types_on_user_id", using: :btree
-  end
-
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "username",               default: "",    null: false
@@ -198,8 +198,6 @@ ActiveRecord::Schema.define(version: 20170407104841) do
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
   add_foreign_key "services", "client_types"
-  add_foreign_key "user_client_types", "client_types"
-  add_foreign_key "user_client_types", "users"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"
 end

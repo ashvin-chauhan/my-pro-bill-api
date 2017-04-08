@@ -25,8 +25,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users, only: [],path: "/clients" do
+  resources :users, only: [],path: "/clients"do
     resources :client_services
+    resources :expense_categories
     get "/customers" => "users#customers"
     get "/users" => "users#client_users"
   end
