@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
+  before_save :downcase_subdomain
 
   attr_accessor :role_names
 
@@ -31,11 +32,19 @@ class User < ActiveRecord::Base
 
   # Get list of clients of specific customer
   has_many  :customers_clients, :class_name => "ClientsCustomer", :foreign_key => "customer_id", dependent: :destroy
-  has_many  :clients, through: :customers_clients
+  has_many  :customer_clients, through: :customers_clients
+
+  # Get list of clients of specific worker
+  has_many  :workers_clients, :class_name => "ClientsWorker", :foreign_key => "worker_id", dependent: :destroy
+  has_many  :worker_clients, through: :workers_clients
 
   # Get list of customers of specific client
   has_many  :clients_customers, :class_name => "ClientsCustomer", :foreign_key => "client_id", dependent: :destroy
   has_many  :customers, through: :clients_customers
+
+  # Get list of customers of specific client
+  has_many  :clients_workers, :class_name => "ClientsWorker", :foreign_key => "client_id", dependent: :destroy
+  has_many  :workers, through: :clients_workers
 
   has_many  :customers_service_prices, :foreign_key => "customer_id", dependent: :destroy
   accepts_nested_attributes_for :customer, :customers_service_prices, allow_destroy: true
@@ -59,12 +68,16 @@ class User < ActiveRecord::Base
     roles.find_by(name: 'Worker') ? true : false
   end
 
+  def sub_admin?
+    roles.find_by(name: 'Sub Admin') ? true : false
+  end
+
   def customer?
     roles.find_by(name: 'Customer') ? true : false
   end
 
   def check_role?
-    (role_names & ['Client Admin', 'Worker']).present? ? true : false
+    (role_names & ['Client Admin']).present? ? true : false
   end
 
   def password_required?
@@ -92,11 +105,8 @@ class User < ActiveRecord::Base
     self.update_attributes(active:true)
   end
 
-  before_commit do
-    if self.customer? && !self.confirmed?
-      password = Devise.friendly_token.first(8)
-      skip_confirmation!
-    end
+  # Callbacks
+  def downcase_subdomain
+    subdomain.downcase if subdomain
   end
-
 end

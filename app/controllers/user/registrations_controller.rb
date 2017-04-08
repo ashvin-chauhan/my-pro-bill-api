@@ -11,6 +11,7 @@ class User::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     build_resource(sign_up_params)
+    resource.skip_confirmation_notification!
     if resource.save!
       if resource.persisted?
         if resource.active_for_authentication?
@@ -19,7 +20,15 @@ class User::RegistrationsController < Devise::RegistrationsController
           expire_data_after_sign_in!
         end
 
+        UserMailer.confirmation_instructions(resource, resource.confirmation_token, {current_user: current_resource_owner}).deliver_now if !resource.customer?
         render_customer_data and return if resource.customer?
+
+        if resource.worker? || resource.sub_admin?
+          resource.subdomain = current_resource_owner.subdomain.downcase
+          resource.save!
+          render_worker_date and return
+        end
+
         render json: resource, status: :ok
       else
         # respond_with resource
@@ -43,6 +52,7 @@ class User::RegistrationsController < Devise::RegistrationsController
     resource_updated = update_resource(resource, account_update_params)
     if resource_updated
       render_customer_data and return if resource.customer?
+      render_worker_date and return if resource.worker? || resource.sub_admin?
       render json: resource, status: :ok
     else
       render json: { error: resource.errors.full_messages }
@@ -68,7 +78,11 @@ class User::RegistrationsController < Devise::RegistrationsController
   private
 
   def render_customer_data
-    render json: resource, include: ['customer', 'roles', 'clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: :ok
+    render json: resource, include: ['customer', 'roles', 'customer_clients', 'customers_service_prices'], :except => [:username, :company, :subdomain], status: :ok
+  end
+
+  def render_worker_date
+    render json: resource, include: ['roles', 'worker_clients'], :except => [:username, :company, :subdomain], status: :ok
   end
 
   protected
