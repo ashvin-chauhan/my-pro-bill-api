@@ -51,10 +51,10 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :customer, :customers_service_prices, allow_destroy: true
 
   # Scopes
-  scope :super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
-  scope :clients, -> { joins(:roles).where(roles: {name: "Client Admin"}) }
-  scope :workers, -> { joins(:roles).where(roles: {name: "Worker"}) }
-  scope :customers, -> { joins(:roles).where(roles: {name: "Customer"}) }
+  scope :all_super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
+  scope :all_clients, -> { joins(:roles).where(roles: {name: "Client Admin"}) }
+  scope :all_workers, -> { joins(:roles).where(roles: {name: "Worker"}) }
+  scope :all_customers, -> { joins(:roles).where(roles: {name: "Customer"}) }
 
   # Instance method
   def super_admin?
