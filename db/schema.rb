@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410072736) do
+ActiveRecord::Schema.define(version: 20170411072609) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,28 @@ ActiveRecord::Schema.define(version: 20170410072736) do
     t.index ["client_type_id"], name: "index_client_services_on_client_type_id", using: :btree
     t.index ["deleted_at"], name: "index_client_services_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_client_services_on_user_id", using: :btree
+  end
+
+  create_table "client_tasks", force: :cascade do |t|
+    t.integer  "client_id"
+    t.string   "task_name"
+    t.text     "task_description"
+    t.integer  "assign_to_id"
+    t.datetime "due_date"
+    t.integer  "for_customer_id"
+    t.integer  "status",                  default: 0
+    t.integer  "mark_as_completed_by_id"
+    t.integer  "created_by_id"
+    t.datetime "completed_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.index ["assign_to_id"], name: "index_client_tasks_on_assign_to_id", using: :btree
+    t.index ["client_id"], name: "index_client_tasks_on_client_id", using: :btree
+    t.index ["created_by_id"], name: "index_client_tasks_on_created_by_id", using: :btree
+    t.index ["deleted_at"], name: "index_client_tasks_on_deleted_at", using: :btree
+    t.index ["for_customer_id"], name: "index_client_tasks_on_for_customer_id", using: :btree
+    t.index ["mark_as_completed_by_id"], name: "index_client_tasks_on_mark_as_completed_by_id", using: :btree
   end
 
   create_table "client_types", force: :cascade do |t|
@@ -58,12 +80,12 @@ ActiveRecord::Schema.define(version: 20170410072736) do
     t.integer  "billing_period"
     t.boolean  "should_print_invoice",  default: false, null: false
     t.boolean  "has_email_invoice",     default: false, null: false
-    t.integer  "billing_notifications"
-    t.integer  "service_notifications"
     t.integer  "user_id"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.datetime "deleted_at"
+    t.text     "billing_notifications", default: [],                 array: true
+    t.text     "service_notifications", default: [],                 array: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_customers_on_user_id", using: :btree
   end
@@ -225,6 +247,11 @@ ActiveRecord::Schema.define(version: 20170410072736) do
 
   add_foreign_key "client_services", "client_types"
   add_foreign_key "client_services", "users"
+  add_foreign_key "client_tasks", "users", column: "assign_to_id"
+  add_foreign_key "client_tasks", "users", column: "client_id"
+  add_foreign_key "client_tasks", "users", column: "created_by_id"
+  add_foreign_key "client_tasks", "users", column: "for_customer_id"
+  add_foreign_key "client_tasks", "users", column: "mark_as_completed_by_id"
   add_foreign_key "customers", "users"
   add_foreign_key "customers_service_prices", "client_services"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
