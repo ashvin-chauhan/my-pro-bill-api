@@ -1,8 +1,8 @@
 class ExpenseCategoriesController < ApplicationController
-	include InheritAction
+  include InheritAction
   before_action :get_client
-  
-  def create 
+
+  def create
     @resource = @client.expense_categories.new(resource_params)
     super
   end
@@ -10,11 +10,5 @@ class ExpenseCategoriesController < ApplicationController
   def update
     @resource = @client.expense_categories.find(params[:id])
     super
-  end
-
-  private
-
-  def get_client
-    @client ||= User.find(params[:user_id])
   end
 end

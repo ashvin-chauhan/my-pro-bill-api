@@ -43,12 +43,14 @@ class User < ActiveRecord::Base
   has_many  :clients_customers, :class_name => "ClientsCustomer", :foreign_key => "client_id", dependent: :destroy
   has_many  :customers, through: :clients_customers
 
-  # Get list of customers of specific client
+  # Get list of workers of specific client
   has_many  :clients_workers, :class_name => "ClientsWorker", :foreign_key => "client_id", dependent: :destroy
   has_many  :workers, through: :clients_workers
 
   has_many  :customers_service_prices, :foreign_key => "customer_id", dependent: :destroy
   accepts_nested_attributes_for :customer, :customers_service_prices, allow_destroy: true
+
+  has_many :client_tasks, foreign_key: "client_id", dependent: :destroy
 
   # Scopes
   scope :all_super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
