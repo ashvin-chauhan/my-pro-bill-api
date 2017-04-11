@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
   before_save :downcase_subdomain
+  after_commit :clone_services, on: :create
 
   attr_accessor :role_names
 
@@ -116,8 +117,14 @@ class User < ActiveRecord::Base
     self.update_attributes(active:true)
   end
 
+  private
+
   # Callbacks
   def downcase_subdomain
     subdomain.downcase if subdomain
+  end
+
+  def clone_services
+    client_services.create(services.select(:service_name, :client_type_id).map(&:attributes)) if client?
   end
 end

@@ -17,7 +17,7 @@ class ApplicationController < ActionController::API
       customers_service_prices_attributes: [:client_service_id, :price]
     ])
 
-    if current_resource_owner.client? || current_resource_owner.super_admin?
+    if current_resource_owner.present? && ( current_resource_owner.client? || current_resource_owner.super_admin? )
       devise_parameter_sanitizer.permit(
         :account_update, keys: [:first_name, :last_name, :subdomain, :phone, :company, :active, :nick_name, :address, :city, :state, :country, :zip, :alternate_phone, :alternate_email, client_type_ids: [], role_names: [],
         customer_attributes: [:billing_period, :should_print_invoice, billing_notifications: [], service_notifications: []],
