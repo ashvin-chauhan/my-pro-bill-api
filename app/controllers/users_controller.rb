@@ -12,7 +12,7 @@ class UsersController < ApplicationController
 
   # GET  /clients/:user_id/customers
   def customers
-    render json: ActiveModel::Serializer::CollectionSerializer.new(@client.customers, serializer: ClientCustomersAttributesSerializer, roles: false), status: 200
+    render json: array_serializer.new(@client.customers, serializer: ClientCustomersAttributesSerializer, roles: false), status: 200
   end
 
   # GET  /clients/:user_id/users
@@ -59,10 +59,6 @@ class UsersController < ApplicationController
 
   def get_user
     @user = User.find(params[:id])
-  end
-
-  def get_client
-    @client = User.find(params[:user_id])
   end
 
 end

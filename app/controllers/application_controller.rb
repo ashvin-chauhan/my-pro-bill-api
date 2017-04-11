@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+  include ResourceFinder
   before_action :doorkeeper_authorize!
   around_action :handle_exceptions
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -41,6 +42,10 @@ class ApplicationController < ActionController::API
       status = 500
     end
     render json: { error: e.message }, status: status unless e.class == NilClass
+  end
+
+  def array_serializer
+    ActiveModel::Serializer::CollectionSerializer
   end
 end
 
