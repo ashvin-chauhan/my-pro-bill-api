@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410090336) do
+ActiveRecord::Schema.define(version: 20170411072609) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,12 +80,12 @@ ActiveRecord::Schema.define(version: 20170410090336) do
     t.integer  "billing_period"
     t.boolean  "should_print_invoice",  default: false, null: false
     t.boolean  "has_email_invoice",     default: false, null: false
-    t.integer  "billing_notifications"
-    t.integer  "service_notifications"
     t.integer  "user_id"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.datetime "deleted_at"
+    t.text     "billing_notifications", default: [],                 array: true
+    t.text     "service_notifications", default: [],                 array: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_customers_on_user_id", using: :btree
   end

@@ -9,14 +9,4 @@ class Customer < ApplicationRecord
     "fixed": 3
   }, _suffix: true
 
-  enum billing_notifications: {
-    "email": 0,
-    "postal_service": 1
-  }, _suffix: true
-
-  enum service_notifications: {
-    "email": 0,
-    "text": 1
-  }, _suffix: true
-
 end
