@@ -92,6 +92,14 @@ class User < ActiveRecord::Base
   end
 
   def role_names=(role)
+    if self.roles.count > 0
+      if (worker? || sub_admin?) && ( role.include?("Worker") || role.include?("Sub Admin") )
+        sel_roles = Role.where("name IN (?)", ["Worker", "Sub Admin"])
+        self.roles_user.where("role_id IN (?)", sel_roles.ids).map { |role| role.really_destroy! }
+      end
+      role = role - self.roles.pluck(:name)
+    end
+
     roles = Role.where("name IN (?)", role)
     self.roles << roles
     @role_names = role
