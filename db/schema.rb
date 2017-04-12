@@ -192,10 +192,15 @@ ActiveRecord::Schema.define(version: 20170412063409) do
     t.datetime "service_creation_date"
     t.text     "note"
     t.boolean  "has_next_visit",        default: false, null: false
+    t.integer  "status",                default: 0
     t.integer  "customer_id"
+    t.integer  "created_by_id"
+    t.integer  "client_id"
     t.datetime "deleted_at"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.index ["client_id"], name: "index_service_tickets_on_client_id", using: :btree
+    t.index ["created_by_id"], name: "index_service_tickets_on_created_by_id", using: :btree
     t.index ["customer_id"], name: "index_service_tickets_on_customer_id", using: :btree
     t.index ["deleted_at"], name: "index_service_tickets_on_deleted_at", using: :btree
   end
@@ -290,6 +295,8 @@ ActiveRecord::Schema.define(version: 20170412063409) do
   add_foreign_key "roles_users", "users"
   add_foreign_key "service_ticket_items", "client_services"
   add_foreign_key "service_ticket_items", "service_tickets"
+  add_foreign_key "service_tickets", "users", column: "client_id"
+  add_foreign_key "service_tickets", "users", column: "created_by_id"
   add_foreign_key "service_tickets", "users", column: "customer_id"
   add_foreign_key "services", "client_types"
   add_foreign_key "user_client_types", "client_types"

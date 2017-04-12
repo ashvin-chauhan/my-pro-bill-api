@@ -4,10 +4,17 @@ class ServiceTicketsController < ApplicationController
 
   # POST /clients/:user_id/service_tickets
   def create
-    service_ticket = ServiceTicket.new(service_ticket_params)
+    service_ticket = @client.service_tickets.new(service_ticket_params)
+    service_ticket.created_by = current_resource_owner
     service_ticket.save!
 
-    render json: service_ticket, include: ['service_ticket_items'], status: 201
+    render json: service_ticket, serializer: ServiceTicketAttributesSerializer, status: 201
+  end
+
+  # GET /clients/:user_id/customers/:customer_id/service_tickets
+  def customer_service_tickets
+    service_ticket = @client.service_tickets.where(customer_id: params[:customer_id])
+    render json: array_serializer.new(service_ticket, serializer: ServiceTicketAttributesSerializer), status: 200
   end
 
   private
