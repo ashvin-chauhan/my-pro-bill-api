@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  service_creation_date: 2017-04-12 11:42:24
+  note: MyText
+  has_next_visit: false
+  customer_id: 1
+
+two:
+  service_creation_date: 2017-04-12 11:42:24
+  note: MyText
+  has_next_visit: false
+  customer_id: 1

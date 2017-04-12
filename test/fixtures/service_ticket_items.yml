@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  description: MyText
+  qty_hrs: 9.99
+  rate: 9.99
+  tax_rate: 9.99
+  cost: 9.99
+  service_ticket: one
+  client_service: one
+
+two:
+  description: MyText
+  qty_hrs: 9.99
+  rate: 9.99
+  tax_rate: 9.99
+  cost: 9.99
+  service_ticket: two
+  client_service: two

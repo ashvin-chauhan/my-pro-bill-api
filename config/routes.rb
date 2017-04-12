@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     end
     get "/customers" => "users#customers"
     get "/users" => "users#client_users"
+    resources :service_tickets
   end
 
   resources :services
