@@ -21,7 +21,6 @@ Rails.application.routes.draw do
   resources :users, only: [:show, :index] do
     member do
       patch 'update_password'
-      post 'service_clone'
     end
   end
 

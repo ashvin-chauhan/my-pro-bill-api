@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :doorkeeper_authorize!, only: [:update_password]
   include InheritAction
-  before_action :get_user, only: [:service_clone]
   before_action :get_client, only: [:customers, :client_users]
 
   # GET  /clients
@@ -38,16 +37,6 @@ class UsersController < ApplicationController
       render json: {message: "Password updated successfully"}, status: 201
     else
       render json: {error: @user.errors.full_messages}, status: :unprocessable_entity
-    end
-  end
-
-  # POST  /users/:id/service_clone
-  def service_clone
-    if @user.client_services.count > 0
-      render json: { error: 'Services are already cloned' }, status: 208
-    else
-      client_services = @user.client_services.create(@user.services.select(:service_name, :client_type_id).map(&:attributes))
-      render json: @user, include: ['client_services'], status: 201
     end
   end
 
