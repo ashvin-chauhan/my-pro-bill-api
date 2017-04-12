@@ -13,20 +13,6 @@ class ClientServicesController < ApplicationController
     super
   end	
 
-  def update
-    super
-  end	
-
-  def show
-    render json: @resource, status: 200
-  end
-
-  def destroy
-    @resource.destroy!
-
-    head 200
-  end
-
   private
 
   def get_service
