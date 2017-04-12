@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     patch "/confirm" => "user/confirmations#confirm"
   end
 
+  get "/subdomain_exist" => "users#subdomain_exist"
+
   resources :client_types, except: [:new, :edit]
 
   # Role wise users listing
