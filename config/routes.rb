@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   resources :users, only: [], path: "/clients" do
     resources :client_services
     resources :expense_categories
+    resources :client_expenses do
+      resources :client_expense_attachments
+    end
     resources :tasks, :controller => "client_tasks" do
       put "mark_as_complete", on: :member
     end

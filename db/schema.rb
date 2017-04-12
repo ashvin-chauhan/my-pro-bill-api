@@ -10,10 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411072609) do
+ActiveRecord::Schema.define(version: 20170412124358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "client_expense_attachments", force: :cascade do |t|
+    t.integer  "client_expense_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.string   "expense_file_file_name"
+    t.string   "expense_file_content_type"
+    t.integer  "expense_file_file_size"
+    t.datetime "expense_file_updated_at"
+    t.index ["client_expense_id"], name: "index_client_expense_attachments_on_client_expense_id", using: :btree
+    t.index ["deleted_at"], name: "index_client_expense_attachments_on_deleted_at", using: :btree
+  end
+
+  create_table "client_expenses", force: :cascade do |t|
+    t.string   "expense_name"
+    t.integer  "amount"
+    t.string   "vendor_name"
+    t.date     "expense_date"
+    t.text     "description"
+    t.integer  "start_mileage"
+    t.integer  "end_mileage"
+    t.integer  "client_id"
+    t.integer  "expense_category_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.index ["client_id"], name: "index_client_expenses_on_client_id", using: :btree
+    t.index ["deleted_at"], name: "index_client_expenses_on_deleted_at", using: :btree
+    t.index ["expense_category_id"], name: "index_client_expenses_on_expense_category_id", using: :btree
+  end
 
   create_table "client_services", force: :cascade do |t|
     t.string   "service_name"
@@ -99,15 +130,6 @@ ActiveRecord::Schema.define(version: 20170411072609) do
     t.datetime "deleted_at"
     t.index ["client_service_id"], name: "index_customers_service_prices_on_client_service_id", using: :btree
     t.index ["deleted_at"], name: "index_customers_service_prices_on_deleted_at", using: :btree
-  end
-
-  create_table "error_models", force: :cascade do |t|
-    t.integer  "code"
-    t.string   "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_error_models_on_deleted_at", using: :btree
   end
 
   create_table "expense_categories", force: :cascade do |t|
