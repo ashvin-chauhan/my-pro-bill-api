@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411072609) do
+ActiveRecord::Schema.define(version: 20170412063409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,39 @@ ActiveRecord::Schema.define(version: 20170411072609) do
     t.index ["user_id"], name: "index_roles_users_on_user_id", using: :btree
   end
 
+  create_table "service_ticket_items", force: :cascade do |t|
+    t.text     "description"
+    t.decimal  "qty_hrs",           precision: 8, scale: 2
+    t.decimal  "rate",              precision: 8, scale: 2
+    t.decimal  "tax_rate",          precision: 8, scale: 2
+    t.decimal  "cost",              precision: 8, scale: 2
+    t.integer  "service_ticket_id"
+    t.integer  "client_service_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.index ["client_service_id"], name: "index_service_ticket_items_on_client_service_id", using: :btree
+    t.index ["deleted_at"], name: "index_service_ticket_items_on_deleted_at", using: :btree
+    t.index ["service_ticket_id"], name: "index_service_ticket_items_on_service_ticket_id", using: :btree
+  end
+
+  create_table "service_tickets", force: :cascade do |t|
+    t.datetime "service_creation_date"
+    t.text     "note"
+    t.boolean  "has_next_visit",        default: false, null: false
+    t.integer  "status",                default: 0
+    t.integer  "customer_id"
+    t.integer  "created_by_id"
+    t.integer  "client_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.index ["client_id"], name: "index_service_tickets_on_client_id", using: :btree
+    t.index ["created_by_id"], name: "index_service_tickets_on_created_by_id", using: :btree
+    t.index ["customer_id"], name: "index_service_tickets_on_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_service_tickets_on_deleted_at", using: :btree
+  end
+
   create_table "services", force: :cascade do |t|
     t.string   "service_name"
     t.integer  "client_type_id"
@@ -258,6 +291,11 @@ ActiveRecord::Schema.define(version: 20170411072609) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
+  add_foreign_key "service_ticket_items", "client_services"
+  add_foreign_key "service_ticket_items", "service_tickets"
+  add_foreign_key "service_tickets", "users", column: "client_id"
+  add_foreign_key "service_tickets", "users", column: "created_by_id"
+  add_foreign_key "service_tickets", "users", column: "customer_id"
   add_foreign_key "services", "client_types"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"

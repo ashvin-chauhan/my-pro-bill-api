@@ -52,6 +52,8 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :customer, :customers_service_prices, allow_destroy: true
 
   has_many :client_tasks, foreign_key: "client_id", dependent: :destroy
+  has_many :service_tickets, foreign_key: "client_id", dependent: :destroy
+  has_many :customer_service_tickets, class_name: "service_tickets", foreign_key: "customer_id", dependent: :destroy
 
   # Scopes
   scope :all_super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
