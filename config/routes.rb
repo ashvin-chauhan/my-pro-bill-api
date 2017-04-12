@@ -43,6 +43,10 @@ Rails.application.routes.draw do
     end
     get "/customers" => "users#customers"
     get "/users" => "users#client_users"
+    resources :customers, only: [] do
+      get "/service_tickets" => "service_tickets#customer_service_tickets"
+    end
+    resources :service_tickets, only: [:create]
   end
 
   resources :services
