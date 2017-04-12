@@ -101,6 +101,15 @@ ActiveRecord::Schema.define(version: 20170411072609) do
     t.index ["deleted_at"], name: "index_customers_service_prices_on_deleted_at", using: :btree
   end
 
+  create_table "error_models", force: :cascade do |t|
+    t.integer  "code"
+    t.string   "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_error_models_on_deleted_at", using: :btree
+  end
+
   create_table "expense_categories", force: :cascade do |t|
     t.string   "expense_category_name"
     t.integer  "client_id"
@@ -182,17 +191,6 @@ ActiveRecord::Schema.define(version: 20170411072609) do
     t.index ["deleted_at"], name: "index_services_on_deleted_at", using: :btree
   end
 
-  create_table "user_client_types", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "client_type_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.datetime "deleted_at"
-    t.index ["client_type_id"], name: "index_user_client_types_on_client_type_id", using: :btree
-    t.index ["deleted_at"], name: "index_user_client_types_on_deleted_at", using: :btree
-    t.index ["user_id"], name: "index_user_client_types_on_user_id", using: :btree
-  end
-
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "username",               default: "",    null: false
@@ -261,8 +259,6 @@ ActiveRecord::Schema.define(version: 20170411072609) do
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
   add_foreign_key "services", "client_types"
-  add_foreign_key "user_client_types", "client_types"
-  add_foreign_key "user_client_types", "users"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"
 end
