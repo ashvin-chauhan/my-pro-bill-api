@@ -11,11 +11,29 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do |routes|
-    puts "=================="
-    puts params
-    puts "=================="
-    user = User.find_for_database_authentication(email: params[:email])
-    user if user && user.valid_password?(params[:password])
+    if params[:user_id].present?
+      client = User.find(params[:user_id])
+
+      # check for worker or sub admin login
+      user = client.workers.find_for_database_authentication(email: params[:email])
+
+      #check for client login
+      if client.email == params[:email] && user.nil?
+        user = client
+      else
+        #check for customer login
+        user = client.customers.find_for_database_authentication(email: params[:email])
+      end
+    else
+      # Check for super admin login
+      user = User.all_super_admin.find_for_database_authentication(email: params[:email])
+    end
+
+    if user.present? && user.valid_password?(params[:password])
+      user
+    else
+      raise Doorkeeper::Errors::DoorkeeperError.new('Invalid email and password')
+    end
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.

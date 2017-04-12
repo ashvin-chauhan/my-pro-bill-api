@@ -1,7 +1,21 @@
 class UsersController < ApplicationController
-  skip_before_action :doorkeeper_authorize!, only: [:update_password]
+  skip_before_action :doorkeeper_authorize!, only: [:update_password, :subdomain_exist]
   include InheritAction
   before_action :get_client, only: [:customers, :client_users]
+
+  # GET /subdomain_exist
+  def subdomain_exist
+    unless params[:subdomain].present?
+      render json: { error: 'Please supply subdomain' }, status: 400 and return
+    end
+
+    client = User.all_clients.find_by(subdomain: params[:subdomain])
+    if client.present?
+      render json: client, status: 200
+    else
+      render json: { error: 'Client with this subdomain is not exist' }, status: 404
+    end
+  end
 
   # GET  /clients
   def clients
