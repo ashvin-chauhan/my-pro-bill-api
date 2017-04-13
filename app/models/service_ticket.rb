@@ -7,4 +7,20 @@ class ServiceTicket < ApplicationRecord
   accepts_nested_attributes_for :service_ticket_items, allow_destroy: true
 
   enum status: { unprocessed: 0 }
+
+  after_save :send_notification, only: [:create]
+
+  # Send notification mail and text to customer
+
+  def send_notification
+  	if self.customer.customer.service_notifications.count > 1
+  		ServiceTicketMailer.notify_customer(self, self.customer, self.client).deliver
+  		# integrate SMS API
+  	elsif self.customer.customer.service_notifications[0] == "Email"
+  		ServiceTicketMailer.notify_customer(self, self.customer, self.client).deliver
+  	else
+  		# integrate SMS API
+  	end
+  		
+  end
 end
