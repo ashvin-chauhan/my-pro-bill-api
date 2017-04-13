@@ -16,9 +16,9 @@ class User < ActiveRecord::Base
     (?=.*[[:^alnum:]]) # Must contain a symbol
   /x
 
-  validates :subdomain, :company ,:presence => true, :uniqueness => true, if: :check_role?
-  validates :phone, :presence => true, :uniqueness => true
-  validates :first_name, :last_name, :presence => true
+  validates :subdomain, :company ,presence: true, uniqueness: true, if: :check_role?
+  validates :phone, presence: true, uniqueness: true
+  validates :first_name, :last_name, presence: true
   validates :password, allow_nil: true, length: {in: Devise.password_length }, format: { with: PASSWORD_FORMAT, message: "Must in format of upper and lower case mix with at least 1 number and 1 special character." }
 
   # Associations
@@ -34,22 +34,22 @@ class User < ActiveRecord::Base
   has_many  :client_expenses, dependent: :destroy,foreign_key: :client_id
 
   # Get list of clients of specific customer
-  has_many  :customers_clients, :class_name => "ClientsCustomer", :foreign_key => "customer_id", dependent: :destroy
+  has_many  :customers_clients, class_name: "ClientsCustomer", foreign_key: "customer_id", dependent: :destroy
   has_many  :customer_clients, through: :customers_clients
 
   # Get list of clients of specific worker
-  has_many  :workers_clients, :class_name => "ClientsWorker", :foreign_key => "worker_id", dependent: :destroy
+  has_many  :workers_clients, class_name: "ClientsWorker", foreign_key: "worker_id", dependent: :destroy
   has_many  :worker_clients, through: :workers_clients
 
   # Get list of customers of specific client
-  has_many  :clients_customers, :class_name => "ClientsCustomer", :foreign_key => "client_id", dependent: :destroy
+  has_many  :clients_customers, class_name: "ClientsCustomer", foreign_key: "client_id", dependent: :destroy
   has_many  :customers, through: :clients_customers
 
   # Get list of workers of specific client
-  has_many  :clients_workers, :class_name => "ClientsWorker", :foreign_key => "client_id", dependent: :destroy
+  has_many  :clients_workers, class_name: "ClientsWorker", foreign_key: "client_id", dependent: :destroy
   has_many  :workers, through: :clients_workers
 
-  has_many  :customers_service_prices, :foreign_key => "customer_id", dependent: :destroy
+  has_many  :customers_service_prices, foreign_key: "customer_id", dependent: :destroy
   accepts_nested_attributes_for :customer, :customers_service_prices, allow_destroy: true
 
   has_many :client_tasks, foreign_key: "client_id", dependent: :destroy
