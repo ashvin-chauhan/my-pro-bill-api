@@ -14,10 +14,10 @@ class ServiceTicket < ApplicationRecord
 
   def send_notification
     if self.customer.customer.service_notifications.count > 1
-      ServiceTicketMailer.notify_customer(self, self.customer, self.client).deliver
+      ServiceTicketMailer.delay.notify_customer(self, self.customer, self.client)
       # integrate SMS API
     elsif self.customer.customer.service_notifications.include? 'Email'
-      ServiceTicketMailer.notify_customer(self, self.customer, self.client).deliver
+      ServiceTicketMailer.delay.notify_customer(self, self.customer, self.client)
     elsif self.customer.customer.service_notifications.include? 'Text'
       # integrate SMS API
     end
