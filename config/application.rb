@@ -39,5 +39,6 @@ module MyProBillApi
     end
 
     config.middleware.use ActionDispatch::Flash
+    config.active_job.queue_adapter = :delayed_job
   end
 end
