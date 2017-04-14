@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  invoice_number: MyString
+  status: 1
+  sent_on: 2017-04-13 11:47:29
+  service_ticket: one
+
+two:
+  invoice_number: MyString
+  status: 1
+  sent_on: 2017-04-13 11:47:29
+  service_ticket: two

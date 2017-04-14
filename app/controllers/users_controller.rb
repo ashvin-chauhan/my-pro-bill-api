@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   skip_before_action :doorkeeper_authorize!, only: [:update_password, :subdomain_exist]
   include InheritAction
-  before_action :get_client, only: [:customers, :client_users]
+  before_action :get_client, only: [:customers, :client_users, :invoices]
+  before_action :get_customer, only: [:invoices]
 
   # GET /subdomain_exist
   def subdomain_exist
@@ -54,6 +55,11 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET /clients/:user_id/customers/:customer_id/invoices
+  def invoices
+    render json: @customer, serializer: InvoiceCustomerAttributesSerializer, status: 200
+  end
+
   private
 
   def user_params
@@ -62,6 +68,10 @@ class UsersController < ApplicationController
 
   def get_user
     @user = User.find(params[:id])
+  end
+
+  def get_customer
+    @customer = @client.customers.find(params[:customer_id])
   end
 
 end
