@@ -51,8 +51,10 @@ GEM
     byebug (9.0.6)
     case_transform (0.2)
       activesupport
-    chronic (0.10.2)
     climate_control (0.1.0)
+    clockwork (2.0.2)
+      activesupport
+      tzinfo
     cocaine (0.5.8)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.1)
@@ -172,8 +174,6 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    whenever (0.9.7)
-      chronic (>= 0.6.3)
 
 PLATFORMS
   ruby
@@ -181,6 +181,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
   byebug
+  clockwork
   daemons
   delayed_job_active_record
   devise
@@ -198,7 +199,6 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
-  whenever
 
 BUNDLED WITH
    1.14.6

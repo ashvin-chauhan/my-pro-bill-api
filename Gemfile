@@ -55,7 +55,7 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem "paperclip"
 
 # Cron jobs in Ruby
-gem 'whenever', :require => false
+gem 'clockwork', require: false
 
 # For Background Job
 gem 'delayed_job_active_record'

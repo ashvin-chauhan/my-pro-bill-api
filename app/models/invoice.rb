@@ -30,7 +30,7 @@ class Invoice < ApplicationRecord
   end
 
   def self.mark_as_overdue
-    overdue_invoices.update_all(status: :overdue, due_date: nil)
+    overdue_invoices.update_all(status: :overdue)
   end
 
   # callbacks

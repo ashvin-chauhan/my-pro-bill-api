@@ -29,16 +29,18 @@ class ServiceTicket < ApplicationRecord
     invoice = self.build_invoice(customer_id: self.customer_id, invoice_number: Invoice.next_invoice_number)
     invoice.save!
   end
+  handle_asynchronously :create_invoice
 
   # Send notification via mail and/or text to customer
   def send_notification
     if self.customer.customer.service_notifications.count > 1
-      ServiceTicketMailer.delay.notify_customer(self, self.customer, self.client)
+      ServiceTicketMailer.notify_customer(self, self.customer, self.client)
     elsif self.customer.customer.service_notifications.include? 'Email'
       # integrate EMAIL API
-      ServiceTicketMailer.delay.notify_customer(self, self.customer, self.client)
+      ServiceTicketMailer.notify_customer(self, self.customer, self.client)
     elsif self.customer.customer.service_notifications.include? 'Text'
       # integrate SMS API
     end
   end
+  handle_asynchronously :send_notification
 end
