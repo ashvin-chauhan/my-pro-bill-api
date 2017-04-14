@@ -5,7 +5,7 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices
   def index
-    render json: array_serializer.new(@client.client_invoices.includes(:customer, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true), status: 200
+    render json: array_serializer.new(@client.client_invoices.includes(customer: :customer_clients, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true, service: params[:with_service_details]), status: 200
   end
 
   def class_search_params
