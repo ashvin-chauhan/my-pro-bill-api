@@ -56,3 +56,7 @@ gem "paperclip"
 
 # Cron jobs in Ruby
 gem 'whenever', :require => false
+
+# For Background Job
+gem 'delayed_job_active_record'
+gem "daemons"
