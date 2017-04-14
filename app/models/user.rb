@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
   before_save :downcase_subdomain
-  after_commit :clone_services, on: :create
+  after_create_commit :clone_services
 
   attr_accessor :role_names
 
@@ -55,6 +55,8 @@ class User < ActiveRecord::Base
   has_many :client_tasks, foreign_key: "client_id", dependent: :destroy
   has_many :service_tickets, foreign_key: "client_id", dependent: :destroy
   has_many :customer_service_tickets, class_name: "service_tickets", foreign_key: "customer_id", dependent: :destroy
+  has_many :customer_invoices, foreign_key: "customer_id", dependent: :destroy, class_name: "Invoice"
+  has_many :client_invoices, :through => :service_tickets, :source => :invoice
 
   # Scopes
   scope :all_super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
@@ -118,6 +120,12 @@ class User < ActiveRecord::Base
 
   def active_user
     self.update_attributes(active:true)
+  end
+
+  def full_name
+    return nil if first_name.blank? && last_name.blank?
+    return first_name if last_name.blank?
+    "#{first_name.capitalize} #{last_name.capitalize}"
   end
 
   private

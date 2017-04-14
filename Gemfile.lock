@@ -52,6 +52,9 @@ GEM
     case_transform (0.2)
       activesupport
     climate_control (0.1.0)
+    clockwork (2.0.2)
+      activesupport
+      tzinfo
     cocaine (0.5.8)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.1)
@@ -178,6 +181,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
   byebug
+  clockwork
   daemons
   delayed_job_active_record
   devise

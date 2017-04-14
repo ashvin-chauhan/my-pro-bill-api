@@ -29,24 +29,34 @@ Rails.application.routes.draw do
   resources :users, only: [], path: "/clients" do
     resources :client_services
     resources :expense_categories
+    resources :service_tickets, only: [:create] do
+      resources :invoices, only: [:show, :update]
+    end
+
     resources :client_expenses do
       resources :client_expense_attachments
     end
+
     resources :tasks, :controller => "client_tasks" do
       put "mark_as_complete", on: :member
     end
+
     resources :workers, only: [] do
       collection do
         get "/tasks" => 'client_tasks#worker_tasks'
         get "/:worker_id/tasks" => 'client_tasks#worker_tasks_show'
       end
     end
-    get "/customers" => "users#customers"
-    get "/users" => "users#client_users"
+
     resources :customers, only: [] do
       get "/service_tickets" => "service_tickets#customer_service_tickets"
+      get "/invoices" => "users#invoices"
     end
-    resources :service_tickets, only: [:create]
+
+    get "/customers" => "users#customers"
+    get "/users" => "users#client_users"
+    get "/invoices" => "invoices#index"
+    get "/invoices/search" => "invoices#search", concerns: [:searchable]
   end
 
   resources :services

@@ -157,6 +157,22 @@ ActiveRecord::Schema.define(version: 20170413102959) do
     t.index ["deleted_at"], name: "index_expense_categories_on_deleted_at", using: :btree
   end
 
+  create_table "invoices", force: :cascade do |t|
+    t.string   "invoice_number"
+    t.integer  "status",            default: 0
+    t.datetime "sent_on"
+    t.integer  "service_ticket_id"
+    t.integer  "sent_by_id"
+    t.integer  "customer_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.index ["customer_id"], name: "index_invoices_on_customer_id", using: :btree
+    t.index ["deleted_at"], name: "index_invoices_on_deleted_at", using: :btree
+    t.index ["sent_by_id"], name: "index_invoices_on_sent_by_id", using: :btree
+    t.index ["service_ticket_id"], name: "index_invoices_on_service_ticket_id", using: :btree
+  end
+
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer  "resource_owner_id", null: false
     t.integer  "application_id",    null: false
@@ -245,6 +261,7 @@ ActiveRecord::Schema.define(version: 20170413102959) do
     t.datetime "deleted_at"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.datetime "due_date"
     t.index ["client_id"], name: "index_service_tickets_on_client_id", using: :btree
     t.index ["created_by_id"], name: "index_service_tickets_on_created_by_id", using: :btree
     t.index ["customer_id"], name: "index_service_tickets_on_customer_id", using: :btree
@@ -259,6 +276,17 @@ ActiveRecord::Schema.define(version: 20170413102959) do
     t.datetime "deleted_at"
     t.index ["client_type_id"], name: "index_services_on_client_type_id", using: :btree
     t.index ["deleted_at"], name: "index_services_on_deleted_at", using: :btree
+  end
+
+  create_table "user_client_types", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "client_type_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.datetime "deleted_at"
+    t.index ["client_type_id"], name: "index_user_client_types_on_client_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_user_client_types_on_deleted_at", using: :btree
+    t.index ["user_id"], name: "index_user_client_types_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -322,6 +350,9 @@ ActiveRecord::Schema.define(version: 20170413102959) do
   add_foreign_key "client_tasks", "users", column: "mark_as_completed_by_id"
   add_foreign_key "customers", "users"
   add_foreign_key "customers_service_prices", "client_services"
+  add_foreign_key "invoices", "service_tickets"
+  add_foreign_key "invoices", "users", column: "customer_id"
+  add_foreign_key "invoices", "users", column: "sent_by_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
@@ -334,6 +365,8 @@ ActiveRecord::Schema.define(version: 20170413102959) do
   add_foreign_key "service_tickets", "users", column: "created_by_id"
   add_foreign_key "service_tickets", "users", column: "customer_id"
   add_foreign_key "services", "client_types"
+  add_foreign_key "user_client_types", "client_types"
+  add_foreign_key "user_client_types", "users"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"
 end

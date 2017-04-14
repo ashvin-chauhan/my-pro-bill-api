@@ -4,7 +4,7 @@ class CreateClientExpenseAttachments < ActiveRecord::Migration[5.0]
     	t.references :client_expense, index: true
     	t.datetime :deleted_at
       t.index :deleted_at
-      
+
       t.timestamps
     end
   end
