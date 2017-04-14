@@ -5,18 +5,24 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices
   def index
-    render json: array_serializer.new(@client.client_invoices, serializer: CustomerInvoicesAttributesSerializer, customer: true), status: 200
+    render json: array_serializer.new(@client.client_invoices.includes(:customer, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true), status: 200
   end
 
   def class_search_params
-    params.slice(:status, :customer_id, date_range: [:start_date, :end_date])
+    params[:date_range] = eval(params[:date_range]) if params[:date_range].present?
+    params.permit(:customer_id, :date_range => [:start_date, :end_date])
   end
 
   # GET /clients/:user_id/invoices/search
-  # def search
-  #   invoices = @client.client_invoices.filter(class_search_params)
-  #   render json: invoices, status: 200
-  # end
+  def search
+    invoices = @client.client_invoices.filter(class_search_params)
+
+    if params[:status].present?
+      invoices = invoices.where(status: params[:status])
+    end
+
+    render json: array_serializer.new(invoices.includes(:customer, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true), status: 200
+  end
 
   # GET /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id
   def show
