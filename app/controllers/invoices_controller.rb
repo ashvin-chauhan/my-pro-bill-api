@@ -5,7 +5,7 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices
   def index
-    invoices = @client.client_invoices.includes(customer: :customer_clients, service_ticket: :service_ticket_items)
+    invoices = @client.client_invoices.joins(service_ticket: :service_ticket_items).includes(:customer, service_ticket: [:service_ticket_items, :client]).group(:id).select("SUM(service_ticket_items.cost) as amount, invoices.id, invoices.service_ticket_id, invoices.invoice_number, invoices.status, invoices.customer_id")
     invoices = invoices.where("invoices.id IN (?)", JSON.parse(params[:invoice_id])) if params[:invoice_id]
 
     statuswise_amount = invoices.group(:status).sum('service_ticket_items.cost')
