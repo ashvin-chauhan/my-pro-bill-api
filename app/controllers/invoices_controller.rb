@@ -1,7 +1,7 @@
 class InvoicesController < ApplicationController
   include InheritAction
   before_action :get_client
-  before_action :get_service_ticket, except: [:index, :search]
+  before_action :get_service_ticket, except: [:index, :search, :process_invoice]
 
   # GET /clients/:user_id/invoices
   def index
@@ -45,6 +45,39 @@ class InvoicesController < ApplicationController
     else
       render json: { error: "please supply valid status" }, status: 404
     end
+  end
+
+  # POST /clients/:user_id/invoices/process
+  def process_invoice
+    invoices = @client.client_invoices.where("invoices.id IN (?) AND invoices.status != ?", params[:invoices][:invoice_ids], Invoice.statuses[:sent]).includes(:customer, service_ticket: :service_ticket_items)
+
+    if invoices.empty?
+      render json: { message: "Invoices are already sent" }, status: 208 and return
+    end
+
+    CommonService.create_invoice_temp_table
+
+    invoices.each do |invoice|
+      # Check billing notification preferences
+      billing_preferences = invoice.customer.customer.billing_notifications
+
+      if billing_preferences.include?('Email')
+        # Send email billing notification
+        ServiceTicketMailer.send_invoice(invoice).deliver
+      end
+    end
+
+    if InvoiceError.count > 0
+      return_hash = []
+      InvoiceError.all.each do |invoice_error|
+        return_hash << { invoice_id: invoice_error.invoice_id, error: invoice_error.error_detail }
+      end
+      render json: { errors: return_hash }, status: 400
+    else
+      render json: { message: "All Invoices have been successfully sent to corresponding Customers." }, status: 200
+    end
+
+    Temping.teardown
   end
 
   private

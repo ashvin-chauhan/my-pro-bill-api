@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     get "/users" => "users#client_users"
     get "/invoices" => "invoices#index"
     get "/invoices/search" => "invoices#search", concerns: [:searchable]
+    post "/invoices/process" => "invoices#process_invoice"
   end
 
   resources :services

@@ -1,0 +1,63 @@
+<body marginheight="0" marginwidth="0" leftmargin="0" topmargin="0" bgcolor="#ffffff">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" align="center" bgcolor="#ffffff">
+        <tr>
+            <td>
+                <table valign="top" align="center" cellpadding="0" cellspacing="0" width="560" bgcolor="#ffffff" style="font-family:Arial, Helvetica, sans-serif;font-size:14px;line-height:16px;color:#000000; border:1px solid #ddd;">
+                    <tr>
+                        <td align="left" width="60%" valign="top" style="padding-left: 15px;padding-top: 15px;">
+                            <h2 style="color:#005B9A; font-size:22px; margin:0px;"><%= @resource.service_ticket.client.try(:company) %></h2>
+                        </td>
+                        <td align="right" width="40%" style="padding-right: 15px;padding-top: 15px;">
+                            <p style="color:#005B9A; font-size:14px; padding:0px; margin:0 0 5px 0;">Invoice #<%= @resource.invoice_number %></p>
+                            <h2 style="color:#005B9A; text-transform: uppercase; padding:0px; margin:10px 0px;">Invoice</h2>
+                            <p style="color:#005B9A; font-size:14px; padding:0px; margin:5px 0px;">Invoice Date : <%= @resource.service_ticket.service_creation_date.strftime("%m/%d/%Y") %></p>
+                            <p style="color:#005B9A; font-size:14px; padding:0px; margin:5px 0px 15px 0px;">Due Date : <%= @resource.service_ticket.due_date.strftime("%m/%d/%Y") %></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 0 15px;">
+                            <h2 style="color:#777;text-transform: uppercase;font-weight: normal;"><%= @resource.customer.full_name %></h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table valign="top" align="center" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+                                <tr bgcolor="#005B9A" style="color:#fff;">
+                                    <th style="padding: 15px 0px;">Description</th>
+                                    <th style="padding: 15px 0px;">Qty/hrs</th>
+                                    <th style="padding: 15px 0px;">Rate(USD)</th>
+                                    <th style="padding: 15px 0px;">Tax</th>
+                                    <th style="padding: 15px 0px;">Total</th>
+                                </tr>
+                                <% @resource.service_ticket.service_ticket_items.each do |item| %>
+                                  <tr>
+                                      <td align="center" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea; max-width: 100px;"><%= item.description %></td>
+                                      <td align="center" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea;"><%= item.qty_hrs %></td>
+                                      <td align="center" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea;">$<%= item.rate %></td>
+                                      <td align="center" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea;"><%= item.tax_rate.present? ? item.tax_rate : "No Tax" %></td>
+                                      <td align="center" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea;">$<%= item.cost %></td>
+                                  </tr>
+                                <% end %>
+                                <tr>
+                                    <td colspan="3" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea;font-weight: bold;"></td>
+                                    <td align="center" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea;font-weight: bold;">Sub Total : </td>
+                                    <td align="center" style="color:#777;padding: 15px 0px;border-bottom:1px solid #eaeaea;font-weight: bold;">$<%= @resource.service_ticket.service_ticket_items.sum(:cost) %></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="color:#777;padding: 15px 0px;"></td>
+                                    <td align="center" style="color:#777;padding: 15px 0px;font-weight: bold;">Total : </td>
+                                    <td align="center" style="color:#777;padding: 15px 0px;font-weight: bold;">$<%= @resource.service_ticket.service_ticket_items.sum(:cost) %></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" align="right" style="color: #f00;padding: 5px 15px 15px 15px;">
+                                        Due Date : <%= @resource.service_ticket.due_date.strftime("%m/%d/%Y") %>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
