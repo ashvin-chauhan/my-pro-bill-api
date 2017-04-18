@@ -27,7 +27,9 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [], path: "/clients" do
-    resources :client_services
+    resources :client_services do
+      resources :customers_service_prices, only: [:index]
+    end
     resources :expense_categories
     resources :service_tickets, only: [:create] do
       resources :invoices, only: [:show, :update]
