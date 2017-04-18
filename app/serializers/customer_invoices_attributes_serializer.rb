@@ -25,6 +25,6 @@ class CustomerInvoicesAttributesSerializer < ActiveModel::Serializer
   end
 
   def company_name
-    object.customer.customer_clients.first.try(:company)
+    object.service_ticket.client.try(:company)
   end
 end

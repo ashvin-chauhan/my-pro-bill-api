@@ -60,3 +60,10 @@ gem 'clockwork', require: false
 # For Background Job
 gem 'delayed_job_active_record'
 gem "daemons"
+
+# PDF generator
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+
+# For create temporary table
+gem "temping"
