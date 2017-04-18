@@ -5,7 +5,19 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices
   def index
-    render json: array_serializer.new(@client.client_invoices.includes(customer: :customer_clients, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true, service: params[:with_service_details]), status: 200
+    invoices = @client.client_invoices.includes(customer: :customer_clients, service_ticket: :service_ticket_items)
+    invoices = invoices.where("invoices.id IN (?)", JSON.parse(params[:invoice_id])) if params[:invoice_id]
+
+    statuswise_amount = invoices.group(:status).sum('service_ticket_items.cost')
+
+    render json: {
+      total_paid: statuswise_amount['paid'] || 0.0,
+      total_unpaid: statuswise_amount['unpaid'] || 0.0,
+      total_overdue: statuswise_amount['overdue'] || 0.0,
+      total_unsent: statuswise_amount['unsent'] || 0.0,
+      total_sent: statuswise_amount['sent'] || 0.0,
+      invoices: array_serializer.new(invoices, serializer: CustomerInvoicesAttributesSerializer, customer: true, service: params[:with_service_details])
+      }, status: 200
   end
 
   def class_search_params
