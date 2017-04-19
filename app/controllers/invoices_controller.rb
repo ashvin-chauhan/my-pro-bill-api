@@ -75,7 +75,7 @@ class InvoicesController < ApplicationController
 
       if (billing_preferences & ["Email", "email"]).present?
         # Send email billing notification
-        ServiceTicketMailer.send_invoice(invoice).deliver
+        ServiceTicketMailer.send_invoice(invoice, current_resource_owner).deliver
       end
     end
 
