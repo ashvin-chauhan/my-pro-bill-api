@@ -73,7 +73,7 @@ class InvoicesController < ApplicationController
       # Check billing notification preferences
       billing_preferences = invoice.customer.customer.billing_notifications rescue {}
 
-      if billing_preferences.include?('Email')
+      if (billing_preferences & ["Email", "email"]).present?
         # Send email billing notification
         ServiceTicketMailer.send_invoice(invoice).deliver
       end
