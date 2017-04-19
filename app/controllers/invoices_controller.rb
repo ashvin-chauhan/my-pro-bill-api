@@ -74,7 +74,7 @@ class InvoicesController < ApplicationController
       end
       render json: { errors: return_hash }, status: 400
     else
-      render json: { message: "All Invoices have been successfully sent to corresponding Customers." }, status: 200
+      render json: { message: "Invoice(s) have been successfully sent to corresponding Customer(s)." }, status: 200
     end
 
     Temping.teardown
