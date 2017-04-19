@@ -6,7 +6,7 @@ class ServiceTicketMailer < ApplicationMailer
     mail(to: @client.email, subject: 'Service Created Notification')
   end
 
-  def send_invoice(invoice)
+  def send_invoice(invoice, user)
     ActiveRecord::Base.transaction do
       begin
         @invoice = invoice
@@ -25,7 +25,7 @@ class ServiceTicketMailer < ApplicationMailer
 
         attachments['invoice.pdf'] = pdf
         mail(to: @customer.try(:email), subject: "Invoice")
-        @invoice.sent!
+        @invoice.update_attributes!(status: 'sent', sent_by_id: user.id, sent_on: Date.current)
       rescue Exception => e
         @error = e
         raise ActiveRecord::Rollback
