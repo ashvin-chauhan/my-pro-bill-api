@@ -59,7 +59,7 @@ class InvoicesController < ApplicationController
 
     invoices.each do |invoice|
       # Check billing notification preferences
-      billing_preferences = invoice.customer.customer.billing_notifications
+      billing_preferences = invoice.customer.customer.billing_notifications rescue {}
 
       if billing_preferences.include?('Email')
         # Send email billing notification
