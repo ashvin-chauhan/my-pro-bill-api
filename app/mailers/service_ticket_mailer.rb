@@ -17,6 +17,7 @@ class ServiceTicketMailer < ApplicationMailer
         pdf = PdfGenerator.new({action: 'invoices', view: 'process_invoice', resource: @invoice}).send
 
         # Save generated pdf in public directory
+        CommonService.create_folder("invoices")
         save_path = Rails.root.join('public/invoices',"invoice#{@invoice.id}.pdf")
         File.open(save_path, 'wb') do |file|
           file << pdf
