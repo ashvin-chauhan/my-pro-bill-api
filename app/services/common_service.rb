@@ -9,6 +9,7 @@ class CommonService
     end
 
     def create_invoice_temp_table
+      Temping.teardown
       Temping.create :invoice_error do
         with_columns do |t|
           t.integer :invoice_id
