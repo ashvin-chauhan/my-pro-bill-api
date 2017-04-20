@@ -48,14 +48,24 @@ class InvoicesController < ApplicationController
   # PUT /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id
   def update
     status_param = params[:invoice][:status]
-    invoice = @service_ticket.invoice
+    invoice = Invoice.where(service_ticket_id: @service_ticket)
 
     if status_param == "sent" || status_param == "paid"
-      invoice.update_attributes!(status: status_param)
+      if status_param == "sent"
+        if !invoice.first.sent?
+          response = ProcessInvoice.new(invoice, current_resource_owner).send
+          process_invoice_response(response)
+        elsif invoice.first.sent?
+          render json: { error: "Invoice is already sent" }, status: 208 and return
+        end
 
-      render json: invoice, status: 201
+      elsif status_param == "paid"
+        invoice.first.paid!
+        render json: invoice.first, status: 201
+      end
+
     else
-      render json: { error: "please supply valid status" }, status: 404
+      render json: { error: "Please supply valid status" }, status: 404
     end
   end
 
@@ -64,37 +74,24 @@ class InvoicesController < ApplicationController
     invoices = @client.client_invoices.where("invoices.id IN (?) AND invoices.status != ?", params[:invoices][:invoice_ids], Invoice.statuses[:sent]).includes(:customer, service_ticket: :service_ticket_items)
 
     if invoices.empty?
-      render json: { message: "Invoices are already sent" }, status: 208 and return
+      render json: { message: "Invoice(s) are already sent" }, status: 208 and return
     end
 
-    CommonService.create_invoice_temp_table
-
-    invoices.each do |invoice|
-      # Check billing notification preferences
-      billing_preferences = invoice.customer.customer.billing_notifications rescue {}
-
-      if (billing_preferences & ["Email", "email"]).present?
-        # Send email billing notification
-        ServiceTicketMailer.send_invoice(invoice, current_resource_owner).deliver
-      end
-    end
-
-    if InvoiceError.count > 0
-      return_hash = []
-      InvoiceError.all.each do |invoice_error|
-        return_hash << { invoice_id: invoice_error.invoice_id, error: invoice_error.error_detail }
-      end
-      render json: { errors: return_hash }, status: 400
-    else
-      render json: { message: "Invoice(s) have been successfully sent to corresponding Customer(s)." }, status: 200
-    end
-
-    Temping.teardown
+    response = ProcessInvoice.new(invoices, current_resource_owner).send
+    process_invoice_response(response)
   end
 
   private
 
   def get_service_ticket
     @service_ticket = @client.service_tickets.find(params[:service_ticket_id])
+  end
+
+  def process_invoice_response(response)
+    if response.success?
+      render json: { message: response.message }, status: response.status
+    else
+      render json: { errors: response.message }, status: response.status
+    end
   end
 end
