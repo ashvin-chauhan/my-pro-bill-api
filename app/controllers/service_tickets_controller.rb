@@ -23,6 +23,7 @@ class ServiceTicketsController < ApplicationController
     params.require(:service_ticket)
       .permit(
         :customer_id, :service_creation_date, :note, :has_next_visit,
+        service_ticket_attachments_attributes: [:id, :file, allow_destroy: true],
         service_ticket_items_attributes: [
           :id, :client_service_id, :description, :qty_hrs, :rate, :tax_rate,
           :cost, allow_destroy: true
