@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170413102959) do
+ActiveRecord::Schema.define(version: 20170420071818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -234,6 +234,17 @@ ActiveRecord::Schema.define(version: 20170413102959) do
     t.index ["user_id"], name: "index_roles_users_on_user_id", using: :btree
   end
 
+  create_table "service_ticket_attachments", force: :cascade do |t|
+    t.integer  "service_ticket_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+    t.index ["service_ticket_id"], name: "index_service_ticket_attachments_on_service_ticket_id", using: :btree
+  end
+
   create_table "service_ticket_items", force: :cascade do |t|
     t.text     "description"
     t.decimal  "qty_hrs",           precision: 8, scale: 2
@@ -348,6 +359,7 @@ ActiveRecord::Schema.define(version: 20170413102959) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
+  add_foreign_key "service_ticket_attachments", "service_tickets"
   add_foreign_key "service_ticket_items", "client_services"
   add_foreign_key "service_ticket_items", "service_tickets"
   add_foreign_key "service_tickets", "users", column: "client_id"

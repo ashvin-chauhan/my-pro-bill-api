@@ -11,10 +11,12 @@ class ServiceTicket < ApplicationRecord
   belongs_to :created_by, class_name: "User"
   belongs_to :client, class_name: "User"
   has_many :service_ticket_items, dependent: :destroy
+  has_many :service_ticket_attachments, dependent: :destroy
   has_one :invoice, dependent: :destroy
 
   # Nested attributes
   accepts_nested_attributes_for :service_ticket_items, allow_destroy: true
+  accepts_nested_attributes_for :service_ticket_attachments, allow_destroy: true
 
   enum status: { unprocessed: 0, processed: 1 }
 
