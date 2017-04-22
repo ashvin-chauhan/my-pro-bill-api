@@ -36,7 +36,7 @@ class InvoicesController < ApplicationController
     if invoices.count > 0
       render json: array_serializer.new(invoices.includes(:customer, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true), status: 200
     else
-      render json: { error: "No results found" }, status: 404
+      render json: { error: "No results found" }, status: 200
     end
   end
 
