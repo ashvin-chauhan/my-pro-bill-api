@@ -33,11 +33,7 @@ class InvoicesController < ApplicationController
       invoices = invoices.where(status: params[:status])
     end
 
-    if invoices.count > 0
-      render json: array_serializer.new(invoices.includes(:customer, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true), status: 200
-    else
-      render json: { error: "No results found" }, status: 200
-    end
+    render json: array_serializer.new(invoices.includes(:customer, service_ticket: :service_ticket_items), serializer: CustomerInvoicesAttributesSerializer, customer: true), status: 200
   end
 
   # GET /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id
