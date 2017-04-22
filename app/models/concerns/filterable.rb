@@ -11,7 +11,7 @@ module Filterable
           end_date = value[:end_date].try(:to_date)
 
           if start_date && end_date
-            results = results.where("DATE(#{column('created_at')}) BETWEEN ? AND ?", start_date, start_date)
+            results = results.where("DATE(#{column('created_at')}) BETWEEN ? AND ?", start_date, end_date)
           elsif start_date
             results = results.where("DATE(#{column('created_at')}) >= ?", start_date)
           elsif end_date
