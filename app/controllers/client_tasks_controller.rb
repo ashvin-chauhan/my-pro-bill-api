@@ -33,13 +33,6 @@ class ClientTasksController < ApplicationController
     render json: array_serializer.new(@task.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer), status: 200
   end
 
-  # GET /clients/:user_id/workers/:worker_id/tasks
-  def worker_tasks_show
-    @worker = @client.workers.find(params[:worker_id])
-    @task = ClientTask.where(assign_to: @worker)
-    render json: array_serializer.new(@task.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer), status: 200
-  end
-
   # DELETE /clients/:user_id/tasks/:id
   def destroy
     @task.destroy!
