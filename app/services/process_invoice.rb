@@ -7,7 +7,7 @@ class ProcessInvoice < BaseService
     create_temp_table
   end
 
-  def send
+  def call
     process_invoice
 
     check_for_errors

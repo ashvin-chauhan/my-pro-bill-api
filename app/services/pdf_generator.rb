@@ -6,7 +6,7 @@ class PdfGenerator
     @resource = attributes[:resource]
   end
 
-  def send
+  def call
     pdf = WickedPdf.new.pdf_from_string(
             find_html,
             :handlers => [:erb],
