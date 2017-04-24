@@ -17,12 +17,14 @@ Doorkeeper.configure do
       # check for worker or sub admin login
       user = client.workers.find_for_database_authentication(email: params[:email])
 
-      #check for client login
-      if client.email == params[:email] && user.nil?
-        user = client
-      else
-        #check for customer login
-        user = client.customers.find_for_database_authentication(email: params[:email])
+      if user.nil?
+        if client.email == params[:email]
+          #check for client login
+          user = client
+        else
+          #check for customer login
+          user = client.customers.find_for_database_authentication(email: params[:email])
+        end
       end
     else
       # Check for super admin login
