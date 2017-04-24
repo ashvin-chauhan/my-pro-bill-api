@@ -5,19 +5,8 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices
   def index
-    invoices = @client.client_invoices.joins(service_ticket: :service_ticket_items).includes(:customer, service_ticket: [:service_ticket_items, :client]).group(:id).select("SUM(service_ticket_items.cost) as amount, invoices.id, invoices.service_ticket_id, invoices.invoice_number, invoices.status, invoices.customer_id")
-    invoices = invoices.where("invoices.id IN (?)", JSON.parse(params[:invoice_ids])) if params[:invoice_ids]
-
-    statuswise_amount = @client.client_invoices.joins(service_ticket: :service_ticket_items).group(:status).sum('service_ticket_items.cost')
-
-    render json: {
-      total_paid: statuswise_amount['paid'] || 0.0,
-      total_unpaid: statuswise_amount['unpaid'] || 0.0,
-      total_overdue: statuswise_amount['overdue'] || 0.0,
-      total_unsent: statuswise_amount['unsent'] || 0.0,
-      total_sent: statuswise_amount['sent'] || 0.0,
-      invoices: array_serializer.new(invoices, serializer: CustomerInvoicesAttributesSerializer, customer: true, service: params[:with_service_details])
-      }, status: 200
+    response = InvoiceIndexAndFilter.new(@client, params, { from_index: true }).call
+    render json: response, status: 200
   end
 
   def class_search_params
@@ -27,24 +16,8 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices/search
   def search
-    invoices = @client.client_invoices.filter(class_search_params)
-
-    if params[:status].present?
-      invoices = invoices.where(status: params[:status])
-    end
-
-    statuswise_amount = invoices.joins(service_ticket: :service_ticket_items).group(:status).sum('service_ticket_items.cost')
-
-    invoices = invoices.joins(service_ticket: :service_ticket_items).includes(:customer, service_ticket: [:service_ticket_items, :client]).group(:id).select("SUM(service_ticket_items.cost) as amount, invoices.id, invoices.service_ticket_id, invoices.invoice_number, invoices.status, invoices.customer_id")
-
-    render json: {
-        total_paid: statuswise_amount['paid'] || 0.0,
-        total_unpaid: statuswise_amount['unpaid'] || 0.0,
-        total_overdue: statuswise_amount['overdue'] || 0.0,
-        total_unsent: statuswise_amount['unsent'] || 0.0,
-        total_sent: statuswise_amount['sent'] || 0.0,
-        invoices: array_serializer.new(invoices, serializer: CustomerInvoicesAttributesSerializer, customer: true)
-      }, status: 200
+    response = InvoiceIndexAndFilter.new(@client, params, { from_search: true }).call
+    render json: response, status: 200
   end
 
   # GET /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id
