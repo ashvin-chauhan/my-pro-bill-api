@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170420071818) do
+ActiveRecord::Schema.define(version: 20170424051528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "client_expense_attachments", force: :cascade do |t|
     t.integer  "client_expense_id"
-    t.datetime "deleted_at"
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
     t.string   "expense_file_file_name"
@@ -25,22 +24,21 @@ ActiveRecord::Schema.define(version: 20170420071818) do
     t.integer  "expense_file_file_size"
     t.datetime "expense_file_updated_at"
     t.index ["client_expense_id"], name: "index_client_expense_attachments_on_client_expense_id", using: :btree
-    t.index ["deleted_at"], name: "index_client_expense_attachments_on_deleted_at", using: :btree
   end
 
   create_table "client_expenses", force: :cascade do |t|
     t.string   "expense_name"
-    t.integer  "amount"
+    t.decimal  "amount",              precision: 8, scale: 2
     t.string   "vendor_name"
     t.date     "expense_date"
     t.text     "description"
-    t.integer  "start_mileage"
-    t.integer  "end_mileage"
+    t.decimal  "start_mileage",       precision: 8, scale: 2
+    t.decimal  "end_mileage",         precision: 8, scale: 2
     t.integer  "client_id"
     t.integer  "expense_category_id"
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.datetime "deleted_at"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
     t.index ["client_id"], name: "index_client_expenses_on_client_id", using: :btree
     t.index ["deleted_at"], name: "index_client_expenses_on_deleted_at", using: :btree
     t.index ["expense_category_id"], name: "index_client_expenses_on_expense_category_id", using: :btree
@@ -289,6 +287,17 @@ ActiveRecord::Schema.define(version: 20170420071818) do
     t.index ["deleted_at"], name: "index_services_on_deleted_at", using: :btree
   end
 
+  create_table "user_client_types", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "client_type_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.datetime "deleted_at"
+    t.index ["client_type_id"], name: "index_user_client_types_on_client_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_user_client_types_on_deleted_at", using: :btree
+    t.index ["user_id"], name: "index_user_client_types_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "username",               default: "",    null: false
@@ -366,6 +375,8 @@ ActiveRecord::Schema.define(version: 20170420071818) do
   add_foreign_key "service_tickets", "users", column: "created_by_id"
   add_foreign_key "service_tickets", "users", column: "customer_id"
   add_foreign_key "services", "client_types"
+  add_foreign_key "user_client_types", "client_types"
+  add_foreign_key "user_client_types", "users"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"
 end
