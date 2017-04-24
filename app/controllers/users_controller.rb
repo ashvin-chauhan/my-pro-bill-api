@@ -26,7 +26,7 @@ class UsersController < ApplicationController
 
   # GET  /clients/:user_id/customers
   def customers
-    render json: array_serializer.new(@client.customers, serializer: ClientCustomersAttributesSerializer, roles: false), status: 200
+    render json: array_serializer.new(@client.customers, serializer: Users::ClientCustomersAttributesSerializer, roles: false), status: 200
   end
 
   # GET  /clients/:user_id/users
@@ -57,7 +57,7 @@ class UsersController < ApplicationController
 
   # GET /clients/:user_id/customers/:customer_id/invoices
   def invoices
-    render json: @customer, serializer: InvoiceCustomerAttributesSerializer, status: 200
+    render json: @customer, serializer: Invoices::InvoiceCustomerAttributesSerializer, status: 200
   end
 
   private

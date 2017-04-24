@@ -8,13 +8,13 @@ class ServiceTicketsController < ApplicationController
     service_ticket.created_by = current_resource_owner
     service_ticket.save!
 
-    render json: service_ticket, serializer: ServiceTicketAttributesSerializer, status: 201
+    render json: service_ticket, serializer: ServiceTickets::ServiceTicketAttributesSerializer, status: 201
   end
 
   # GET /clients/:user_id/customers/:customer_id/service_tickets
   def customer_service_tickets
     service_ticket = @client.service_tickets.where(customer_id: params[:customer_id])
-    render json: array_serializer.new(service_ticket, serializer: ServiceTicketAttributesSerializer), status: 200
+    render json: array_serializer.new(service_ticket, serializer: ServiceTickets::ServiceTicketAttributesSerializer), status: 200
   end
 
   private
