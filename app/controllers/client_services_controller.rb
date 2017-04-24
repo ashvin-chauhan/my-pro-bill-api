@@ -11,7 +11,7 @@ class ClientServicesController < ApplicationController
   def create
     @resource = @client.client_services.new(resource_params)
     super
-  end	
+  end
 
   private
 

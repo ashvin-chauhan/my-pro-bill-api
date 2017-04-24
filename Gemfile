@@ -28,6 +28,8 @@ gem 'rack-cors'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+  # Load environment variables from .env into ENV in development
+  gem 'dotenv-rails'
 end
 
 group :development do
@@ -52,7 +54,10 @@ gem "paranoia", "~> 2.2"
 gem 'active_model_serializers', '~> 0.10.0'
 
 # For file upload
-gem "paperclip"
+gem "paperclip", "~> 5.0.0"
+
+# For store attachment
+gem "aws-sdk"
 
 # Cron jobs in Ruby
 gem 'clockwork', require: false
@@ -60,3 +65,10 @@ gem 'clockwork', require: false
 # For Background Job
 gem 'delayed_job_active_record'
 gem "daemons"
+
+# PDF generator
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary', "~> 0.9.9"
+
+# For create temporary table
+gem "temping"

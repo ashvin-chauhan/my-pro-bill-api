@@ -12,6 +12,11 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
+/public/invoices
+/public/system
 
 # Ignore Byebug command history file.
 .byebug_history
+
+# Ignore environment variables
+.env

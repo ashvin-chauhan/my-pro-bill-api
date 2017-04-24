@@ -28,6 +28,7 @@ module MyProBillApi
     config.api_only = true
 
     config.autoload_paths << "#{Rails.root}/lib"
+    config.autoload_paths += Dir[Rails.root.join('app', 'services')]
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do

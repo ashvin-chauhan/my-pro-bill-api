@@ -27,15 +27,15 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [], path: "/clients" do
-    resources :client_services
+    resources :client_services do
+      resources :customers_service_prices, only: [:index]
+    end
     resources :expense_categories
     resources :service_tickets, only: [:create] do
       resources :invoices, only: [:show, :update]
     end
 
-    resources :client_expenses do
-      resources :client_expense_attachments
-    end
+    resources :client_expenses
 
     resources :tasks, :controller => "client_tasks" do
       put "mark_as_complete", on: :member
@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     get "/users" => "users#client_users"
     get "/invoices" => "invoices#index"
     get "/invoices/search" => "invoices#search", concerns: [:searchable]
+    post "/invoices/process" => "invoices#process_invoice"
   end
 
   resources :services
