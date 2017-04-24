@@ -5,7 +5,7 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices
   def index
-    response = InvoiceIndexAndFilter.new(@client, params, { from_index: true }).all_invoices
+    response = InvoiceIndexAndFilter.new(@client, params, { from_index: true }).call
     render json: response, status: 200
   end
 
@@ -16,7 +16,7 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/invoices/search
   def search
-    response = InvoiceIndexAndFilter.new(@client, params, { from_search: true }).filter_invoices
+    response = InvoiceIndexAndFilter.new(@client, params, { from_search: true }).call
     render json: response, status: 200
   end
 

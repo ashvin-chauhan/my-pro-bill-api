@@ -7,11 +7,7 @@ class InvoiceIndexAndFilter < BaseService
     @from_search = options[:from_search] || false
   end
 
-  def all_invoices
-    return_hash
-  end
-
-  def filter_invoices
+  def call
     return_hash
   end
 
