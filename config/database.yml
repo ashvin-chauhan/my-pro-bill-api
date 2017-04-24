@@ -82,4 +82,4 @@ production:
   <<: *default
   database: my_pro_bill_api_production
   username: my_pro_bill_api
-  password: <%= ENV['MY_PRO_BILL_API_DATABASE_PASSWORD'] %>
+  password: my_pro_bill_api
