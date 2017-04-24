@@ -36,9 +36,9 @@ ActiveRecord::Schema.define(version: 20170424083722) do
     t.decimal  "end_mileage",         precision: 8, scale: 2
     t.integer  "client_id"
     t.integer  "expense_category_id"
+    t.datetime "deleted_at"
     t.datetime "created_at",                                              null: false
     t.datetime "updated_at",                                              null: false
-    t.datetime "deleted_at"
     t.integer  "created_by_id"
     t.integer  "status",                                      default: 0
     t.index ["client_id"], name: "index_client_expenses_on_client_id", using: :btree
