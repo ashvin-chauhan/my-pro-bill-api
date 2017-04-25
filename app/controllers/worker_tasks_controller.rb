@@ -16,7 +16,7 @@ class WorkerTasksController < ApplicationController
 
   # GET  /clients/:user_id/workers/:worker_id/tasks/:id
   def show
-    render json: @task.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer, status: 200 
+    render json: @task, serializer: ClientTasks::TaskSerializer, status: 200 
   end
 
   private
