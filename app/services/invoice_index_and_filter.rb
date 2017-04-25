@@ -8,19 +8,36 @@ class InvoiceIndexAndFilter < BaseService
   end
 
   def call
-    return_hash
+    if from_index
+      index_invoices
+    elsif from_search
+      search_invoices
+    end
   end
 
   private
 
+  def index_invoices
+    invoices = invoice_with_selected_columns
+    invoices = filter_using_invoice_ids(invoices) if params[:invoice_ids]
+    status_with_amt = statuswise_amount(invoices)
+    return_hash(invoices, status_with_amt)
+  end
+
+  def search_invoices
+    invoices = filter_using_params
+    status_with_amt = statuswise_amount(invoices)
+    return_hash(invoices, status_with_amt)
+  end
+
   # Get client invoices
-  def invoices
+  def client_invoices
     client.client_invoices
   end
 
   # Get invoices with selected columns
   def invoice_with_selected_columns
-    invoices.joins(
+    client_invoices.joins(
       service_ticket: :service_ticket_items
     ).includes(
       :customer,
@@ -33,9 +50,9 @@ class InvoiceIndexAndFilter < BaseService
   end
 
   # Get invoices amount with group of status
-  def statuswise_amount
-    invoices.joins(
-      service_ticket: :service_ticket_items
+  def statuswise_amount(invoices)
+    invoices.unscope(
+      :group
     ).group(
       :status
     ).sum(
@@ -44,7 +61,7 @@ class InvoiceIndexAndFilter < BaseService
   end
 
   # Filter index invoices if invoice ids present otherwise return client all invoices
-  def filter_using_invoice_ids
+  def filter_using_invoice_ids(invoices)
     invoice_with_selected_columns.where("invoices.id IN (?)", JSON.parse(params[:invoice_ids]))
   end
 
@@ -63,20 +80,7 @@ class InvoiceIndexAndFilter < BaseService
     invoices
   end
 
-  # Return final invoices result
-  def updated_invoices
-    if from_index
-      return filter_using_invoice_ids if params[:invoice_ids]
-      return invoice_with_selected_columns
-    elsif from_search
-      filter_using_params
-    end
-  end
-
-  def return_hash
-    invoices = updated_invoices
-    status_with_amt = statuswise_amount
-
+  def return_hash(invoices, status_with_amt)
     {
       total_paid: status_with_amt['paid'] || 0.0,
       total_unpaid: status_with_amt['unpaid'] || 0.0,

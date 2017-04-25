@@ -9,11 +9,6 @@ class InvoicesController < ApplicationController
     render json: response, status: 200
   end
 
-  def class_search_params
-    params[:date_range] = eval(params[:date_range]) if params[:date_range].present?
-    params.permit(:customer_id, :date_range => [:start_date, :end_date])
-  end
-
   # GET /clients/:user_id/invoices/search
   def search
     response = InvoiceIndexAndFilter.new(@client, params, { from_search: true }).call
