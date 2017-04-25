@@ -14,7 +14,7 @@ class ServiceTicketMailer < ApplicationMailer
         @service_ticket = invoice.service_ticket
 
         # Call pdf generator service for generate pdf
-        pdf = PdfGenerator.new({action: 'invoices', view: 'process_invoice', resource: @invoice}).send
+        pdf = PdfGenerator.new({action: 'invoices', view: 'process_invoice', resource: @invoice}).call
 
         # Save generated pdf in public directory
         CommonService.create_folder("invoices")
