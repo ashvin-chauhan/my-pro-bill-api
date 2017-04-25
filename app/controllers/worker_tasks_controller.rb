@@ -30,7 +30,7 @@ class WorkerTasksController < ApplicationController
   end
 
   def task_params
-    params.require(:client_task).permit(:task_name, :task_description,:status,:assign_to_id, :due_date,:for_customer_id)
+    params.require(:WorkerTaskForm).permit(:task_name, :task_description,:status,:assign_to_id, :due_date,:for_customer_id)
   end
 
 end
