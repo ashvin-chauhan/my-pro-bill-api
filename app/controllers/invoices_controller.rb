@@ -9,11 +9,6 @@ class InvoicesController < ApplicationController
     render json: response, status: 200
   end
 
-  def class_search_params
-    params[:date_range] = eval(params[:date_range]) if params[:date_range].present?
-    params.permit(:customer_id, :date_range => [:start_date, :end_date])
-  end
-
   # GET /clients/:user_id/invoices/search
   def search
     response = InvoiceIndexAndFilter.new(@client, params, { from_search: true }).call
@@ -33,7 +28,7 @@ class InvoicesController < ApplicationController
     if status_param == "sent" || status_param == "paid"
       if status_param == "sent"
         if !invoice.first.sent?
-          response = ProcessInvoice.new(invoice, current_resource_owner).send
+          response = ProcessInvoice.new(invoice, current_resource_owner).call
           process_invoice_response(response)
         elsif invoice.first.sent?
           render json: { error: "Invoice is already sent" }, status: 208 and return
@@ -57,7 +52,7 @@ class InvoicesController < ApplicationController
       render json: { message: "Invoice(s) are already sent" }, status: 208 and return
     end
 
-    response = ProcessInvoice.new(invoices, current_resource_owner).send
+    response = ProcessInvoice.new(invoices, current_resource_owner).call
     process_invoice_response(response)
   end
 
