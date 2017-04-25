@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     get "/invoices" => "invoices#index"
     get "/invoices/search" => "invoices#search", concerns: [:searchable]
     post "/invoices/process" => "invoices#process_invoice"
+    get "/dashboard_details" => "users#dashboard"
   end
 
   resources :services

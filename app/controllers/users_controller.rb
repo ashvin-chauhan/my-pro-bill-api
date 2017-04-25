@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :doorkeeper_authorize!, only: [:update_password, :subdomain_exist]
   include InheritAction
-  before_action :get_client, only: [:customers, :client_users, :invoices]
+  before_action :get_client, only: [:customers, :client_users, :invoices, :dashboard]
   before_action :get_customer, only: [:invoices]
 
   # GET /subdomain_exist
@@ -58,6 +58,12 @@ class UsersController < ApplicationController
   # GET /clients/:user_id/customers/:customer_id/invoices
   def invoices
     render json: @customer, serializer: Invoices::InvoiceCustomerAttributesSerializer, status: 200
+  end
+
+  # GET /clients/:user_id/dashboard_details
+  def dashboard
+    response = ClientDashboardDetail.new(@client).call
+    render json: response, status: 200
   end
 
   private
