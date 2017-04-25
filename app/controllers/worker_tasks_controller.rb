@@ -10,16 +10,13 @@ class WorkerTasksController < ApplicationController
 
   # PATCH  /clients/:user_id/workers/:worker_id/tasks/:id
   def update
-    if @task.update_attributes(task_params) 
-      render json: @task, status: 201
-    else
-      render json: {error: @task.errors.full_messages}, status: :unprocessable_entity
-    end
+    @task.update_attributes!(task_params) 
+    render json: @task, status: 201
   end
 
   # GET  /clients/:user_id/workers/:worker_id/tasks/:id
   def show
-    render json: array_serializer.new(@task.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer), status: 200
+    render json: @task.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer, status: 200 
   end
 
   private
@@ -33,8 +30,7 @@ class WorkerTasksController < ApplicationController
   end
 
   def task_params
-    params.require(:client_task)
-    .permit(:task_name, :task_description,:status,:assign_to_id, :due_date,:for_customer_id)
+    params.require(:client_task).permit(:task_name, :task_description,:status,:assign_to_id, :due_date,:for_customer_id)
   end
 
 end
