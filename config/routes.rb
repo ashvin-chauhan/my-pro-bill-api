@@ -44,8 +44,8 @@ Rails.application.routes.draw do
     resources :workers, only: [] do
       collection do
         get "/tasks" => 'client_tasks#worker_tasks'
-        get "/:worker_id/tasks" => 'client_tasks#worker_tasks_show'
       end
+      resources :worker_tasks, path: "/tasks", except: [:create,:destroy]
     end
 
     resources :customers, only: [] do
