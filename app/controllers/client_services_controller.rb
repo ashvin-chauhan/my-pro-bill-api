@@ -5,7 +5,12 @@ class ClientServicesController < ApplicationController
 
 
   def index
-  	render json: @client.client_services
+    json_response({
+      success: true,
+      data: {
+        client_services: @client.client_services
+      }
+    }, 200)
   end
 
   def create
