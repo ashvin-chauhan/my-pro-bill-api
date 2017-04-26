@@ -1,6 +1,6 @@
 class UserMailer < Devise::Mailer
   include Devise::Controllers::UrlHelpers # Optional. eg. `confirmation_url`
-
+  default from: 'rfp@gmail.com'
   def user_confirmation(resource)
   	@resource = resource
   	mail(to: @resource.email, subject: 'Account create successfully.')

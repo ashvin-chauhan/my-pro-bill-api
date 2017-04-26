@@ -1,4 +1,5 @@
 class ClientExpense < ApplicationRecord
+  include Filterable
   acts_as_paranoid
 
   # Associations
