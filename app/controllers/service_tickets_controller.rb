@@ -8,13 +8,24 @@ class ServiceTicketsController < ApplicationController
     service_ticket.created_by = current_resource_owner
     service_ticket.save!
 
-    render json: service_ticket, serializer: ServiceTickets::ServiceTicketAttributesSerializer, status: 201
+    json_response({
+      success: true,
+      data: {
+        service_ticket: ServiceTickets::ServiceTicketAttributesSerializer.new(service_ticket)
+      }
+    }, 201)
   end
 
   # GET /clients/:user_id/customers/:customer_id/service_tickets
   def customer_service_tickets
-    service_ticket = @client.service_tickets.where(customer_id: params[:customer_id])
-    render json: array_serializer.new(service_ticket, serializer: ServiceTickets::ServiceTicketAttributesSerializer), status: 200
+    service_ticket = @client.service_tickets.where(customer_id: params[:customer_id]).includes(:service_ticket_items, :service_ticket_attachments, :created_by, :customer)
+
+    json_response({
+      success: true,
+      data: {
+        service_tickets: array_serializer.new(service_ticket, serializer: ServiceTickets::ServiceTicketAttributesSerializer)
+      }
+    }, 200)
   end
 
   private
