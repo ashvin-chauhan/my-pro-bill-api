@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   use_doorkeeper do
   	skip_controllers :applications, :authorized_applications
   end
-
+  concern :searchable do
+    collection do
+      get 'search'
+    end
+  end
   devise_for :users, controllers: {
     registrations: 'user/registrations',
     passwords: 'user/passwords',
@@ -35,7 +39,7 @@ Rails.application.routes.draw do
       resources :invoices, only: [:show, :update]
     end
 
-    resources :client_expenses
+    resources :client_expenses,concerns: [:searchable]
 
     resources :tasks, :controller => "client_tasks" do
       put "mark_as_complete", on: :member
