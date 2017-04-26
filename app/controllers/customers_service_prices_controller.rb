@@ -6,7 +6,13 @@ class CustomersServicePricesController < ApplicationController
   # GET /clients/:user_id/client_services/:client_service_id/customers_service_prices
   def index
     @service_price = @service_price.where(customer_id: params[:customer_id]) if params[:customer_id].present?
-    render json: @service_price, status: 200
+
+    json_response({
+      success: true,
+      data: {
+        customers_service_prices: @service_price
+      }
+    }, 200)
   end
 
   private
