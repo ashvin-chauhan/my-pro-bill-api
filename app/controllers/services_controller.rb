@@ -11,7 +11,13 @@ class ServicesController < ApplicationController
   # GET /services
   def index
     resource = resource_class.includes(:client_type)
-    render json: resource, include: ['client_type'], status: :ok
+
+    json_response({
+      success: true,
+      data: {
+        services: resource.as_json(include: [:client_type])
+      }
+    }, 200)
   end
 
   private
