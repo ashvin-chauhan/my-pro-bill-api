@@ -30,7 +30,7 @@ class WorkerTasksController < ApplicationController
   end
 
   def task_params
-    params.require(:WorkerTaskForm).permit(:status)
+    params.require(:client_task).permit(:status)
   end
 
 end
