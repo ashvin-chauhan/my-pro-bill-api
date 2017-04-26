@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   def doorkeeper_unauthorized_render_options(error: nil)
-    { json: { success: false, message: "", data: [], errors: "You are not authorized" } }
+    { json: { success: false, message: "Authorization Failed", errors: [{detail: "You are not authorized"}] } }
   end
 
   protected
@@ -43,13 +43,14 @@ class ApplicationController < ActionController::API
     begin
       yield
     rescue ActiveRecord::RecordNotFound => e
-      render_not_found_response(e) and return
+      @status = 404
+      @message = "Record not found"
     rescue ActiveRecord::RecordInvalid => e
       render_unprocessable_entity_response(e) and return
     rescue Exception => e
-      status = 500
+      @status = 500
     end
-    json_response({success: false, errors: e.message}, status) unless e.class == NilClass
+    json_response({success: false, message: @message || e.class.to_s, errors: [{detail: e.message}]}, @status) unless e.class == NilClass
   end
 
   def array_serializer
@@ -60,12 +61,8 @@ class ApplicationController < ActionController::API
     json_response({success: false, message: "Validation Failed", errors: ValidationErrorsSerializer.new(exception.record).serialize}, 422)
   end
 
-  def render_not_found_response(exception)
-    json_response({success: false, errors: exception.message}, 404)
-  end
-
   def json_response(options = {}, status = 500)
-    render json: JsonResponse.new(options), serializer: options[:serializer], status: status
+    render json: JsonResponse.new(options), status: status
   end
 end
 

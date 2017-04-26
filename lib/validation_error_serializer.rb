@@ -1,16 +1,16 @@
 class ValidationErrorSerializer
 
-  def initialize(record, field, details)
+  def initialize(record, field, detail)
     @record = record
     @field = field
-    @details = details
+    @detail = detail
   end
 
   def serialize
     {
       resource: resource,
       field: field,
-      code: code
+      detail: detail
     }
   end
 
@@ -32,11 +32,11 @@ class ValidationErrorSerializer
     )
   end
 
-  def code
+  def detail
     I18n.t(
-      @details[:error],
-      scope: [:errors, :codes],
-      default: @details[:error].to_s
+      @detail,
+      scope: [:details],
+      default: @detail.to_s
     )
   end
 
