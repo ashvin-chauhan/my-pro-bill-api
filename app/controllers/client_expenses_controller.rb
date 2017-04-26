@@ -7,7 +7,12 @@ class ClientExpensesController < ApplicationController
   def index
     client_expenses = @client.client_expenses
 
-    render json: array_serializer.new(client_expenses, serializer: ClientExpenses::ClientExpenseAttributesSerializer), status: 200
+    json_response({
+      success: true,
+      data: {
+        client_expenses: array_serializer.new(client_expenses, serializer: ClientExpenses::ClientExpenseAttributesSerializer)
+      }
+    }, 200)
   end
 
   # POST /clients/:user_id/client_expenses
@@ -16,18 +21,34 @@ class ClientExpensesController < ApplicationController
     client_expense.created_by_id = current_resource_owner.id
     client_expense.save!
 
-    render json: client_expense, serializer: ClientExpenses::ClientExpenseAttributesSerializer, status: 201
+    json_response({
+      success: true,
+      data: {
+        client_expense: ClientExpenses::ClientExpenseAttributesSerializer.new(client_expense)
+      }
+    }, 201)
   end
 
   # GET /clients/:user_id/client_expenses/:id
   def show
-    render json: @client_expense, serializer: ClientExpenses::ClientExpenseAttributesSerializer, attachment: true, category: true, status: 200
+    json_response({
+      success: true,
+      data: {
+        client_expense: ClientExpenses::ClientExpenseAttributesSerializer.new(@client_expense, attachment: true, category: true)
+      }
+    }, 200)
   end
 
   # PUT /clients/:user_id/client_expenses/:id
   def update
     @client_expense.update_attributes(client_expsense_params)
-    render json: @client_expense, serializer: ClientExpenses::ClientExpenseAttributesSerializer, status: 200
+
+    json_response({
+      success: true,
+      data: {
+        client_expense: ClientExpenses::ClientExpenseAttributesSerializer.new(@client_expense)
+      }
+    }, 200)
   end
 
   # DELETE /clients/:user_id/tasks/:id
