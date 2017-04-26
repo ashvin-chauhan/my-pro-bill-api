@@ -36,6 +36,16 @@ class ClientExpensesController < ApplicationController
     super
   end
 
+  def class_search_params
+    params.slice(:expense_date)
+  end
+
+  # GET    /clients/:user_id/client_expenses/search
+  def search
+    client_expenses = @client.client_expenses.filter(class_search_params)
+    render json: array_serializer.new(client_expenses, serializer: ClientExpenses::ClientExpenseAttributesSerializer), status: 200
+  end
+
   private
 
   def client_expsense_params
