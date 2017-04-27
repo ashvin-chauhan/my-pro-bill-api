@@ -46,7 +46,7 @@ class ApplicationController < ActionController::API
       @status = 404
       @message = "Record not found"
     rescue ActiveRecord::RecordInvalid => e
-      render_unprocessable_entity_response(e) and return
+      render_unprocessable_entity_response(e.record) and return
     rescue Exception => e
       @status = 500
     end
@@ -57,8 +57,21 @@ class ApplicationController < ActionController::API
     ActiveModel::Serializer::CollectionSerializer
   end
 
-  def render_unprocessable_entity_response(exception)
-    json_response({success: false, message: "Validation Failed", errors: ValidationErrorsSerializer.new(exception.record).serialize}, 422)
+  def render_user_success_response(resource)
+    json_response({
+      success: true,
+      data: {
+        user: resource
+      }
+    }, 200)
+  end
+
+  def render_unprocessable_entity_response(resource)
+    json_response({
+      success: false,
+      message: "Validation Failed",
+      errors: ValidationErrorsSerializer.new(resource).serialize
+    }, 422)
   end
 
   def json_response(options = {}, status = 500)

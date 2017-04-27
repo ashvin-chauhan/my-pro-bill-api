@@ -6,9 +6,32 @@ class User::PasswordsController < Devise::PasswordsController
   # end
 
   # POST /resource/password
-  # def create
-  #   super
-  # end
+  def create
+    self.resource = resource_class.find_by(email: resource_params[:email])
+    if resource
+      resource_class.send_reset_password_instructions(resource_params)
+    else
+      json_response({
+        success: false,
+        message: "Record not found",
+        errors: [
+          {
+            detail: "Couldn't find #{resource_name.to_s.capitalize} with 'email'=#{resource_params[:email]}"
+          }
+        ]
+      }, 400) and return
+    end
+    yield resource if block_given?
+
+    if successfully_sent?(resource)
+      json_response({
+        success: true,
+        message: "Reset link sent on your mail"
+      }, 200)
+    else
+      render_unprocessable_entity_response(resource)
+    end
+  end
 
   # GET /resource/password/edit?reset_password_token=abcdef
   # def edit
@@ -28,10 +51,10 @@ class User::PasswordsController < Devise::PasswordsController
       else
         set_flash_message!(:notice, :updated_not_active)
       end
-      render json: resource, status: :ok
+      render_user_success_response(resource)
     else
       set_minimum_password_length
-      render json: {error: resource.errors.full_messages}, status: :unprocessable_entity
+      render_unprocessable_entity_response(resource)
     end
   end
 

@@ -13,15 +13,15 @@ class User::ConfirmationsController < Devise::ConfirmationsController
           resource.active_user
           resource.confirm
           UserMailer.user_confirmation(resource).deliver_now
-          render json: resource, status: :ok
+          render_user_success_response(resource)
         else
-         render json: {error: resource.errors.full_messages}, status: :unprocessable_entity
+          render_unprocessable_entity_response(resource)
         end
       else
-        render json: { error: "Confirmation token and subdomain combination is invalid." }, status: :unprocessable_entity
+        render_error_response("Confirmation token and subdomain combination is invalid.")
       end
     else
-      render json: { error: "Please supply valid parameters" }, status: 404
+      render_error_response("Please supply valid parameters")
     end
   end
 
@@ -41,9 +41,22 @@ class User::ConfirmationsController < Devise::ConfirmationsController
   # end
 
   private
-    def permitted_params
-      params.require(resource_name).permit(:confirmation_token, :password, :password_confirmation)
-    end
+
+  def permitted_params
+    params.require(resource_name).permit(:confirmation_token, :password, :password_confirmation)
+  end
+
+  def render_error_response(error)
+    json_response({
+      success: false,
+      message: "Invalid parameters",
+      errors: [
+        {
+          detail: error
+        }
+      ]
+    }, 422)
+  end
   # protected
 
   # The path used after resending confirmation instructions.

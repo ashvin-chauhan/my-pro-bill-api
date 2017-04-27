@@ -29,13 +29,12 @@ class User::RegistrationsController < Devise::RegistrationsController
           render_worker_date and return
         end
 
-        render json: resource, status: :ok
+        render_user_success_response(resource)
       else
-        # respond_with resource
-        render json: { error: resource.errors.full_messages }, status: :unprocessable_entity
+        render_unprocessable_entity_response(resource)
       end
     else
-      render json: { error: resource.errors.full_messages }, status: :unprocessable_entity
+      render_unprocessable_entity_response(resource)
     end
   end
 
@@ -53,9 +52,9 @@ class User::RegistrationsController < Devise::RegistrationsController
     if resource_updated
       render_customer_data and return if resource.customer?
       render_worker_date and return if resource.worker? || resource.sub_admin?
-      render json: resource, status: :ok
+      render_user_success_response(resource)
     else
-      render json: { error: resource.errors.full_messages }
+      render_unprocessable_entity_response(resource)
     end
   end
 
@@ -63,7 +62,9 @@ class User::RegistrationsController < Devise::RegistrationsController
   def destroy
     resource.destroy
 
-    head 200
+    json_response({
+      success: true
+    }, 200)
   end
 
   # GET /resource/cancel
@@ -78,11 +79,21 @@ class User::RegistrationsController < Devise::RegistrationsController
   private
 
   def render_customer_data
-    render json: resource, serializer: Users::ClientCustomersAttributesSerializer, roles: true, status: 200
+    json_response({
+      success: true,
+      data: {
+        user: Users::ClientCustomersAttributesSerializer.new(resource, roles: true)
+      }
+    }, 200)
   end
 
   def render_worker_date
-    render json: resource, include: ['roles', 'worker_clients'], :except => [:username, :company, :subdomain], status: :ok
+    json_response({
+      success: true,
+      data: {
+        user: resource.as_json(include: [:roles, :worker_clients], :except => [:username, :company, :subdomain])
+      }
+    }, 200)
   end
 
   protected

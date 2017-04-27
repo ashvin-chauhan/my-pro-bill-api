@@ -28,14 +28,14 @@ class UsersController < ApplicationController
       }, 200)
     else
       json_response({
-        success: true,
+        success: false,
         message: "Record not found",
         errors: [
           {
             detail: 'Client with this subdomain is not exist'
           }
         ]
-      }, 404)
+      }, 400)
     end
   end
 
@@ -106,11 +106,7 @@ class UsersController < ApplicationController
         message: "Password updated successfully"
       }, 201)
     else
-      json_response({
-        success: false,
-        message: "Validation Failed",
-        errors: ValidationErrorsSerializer.new(@user).serialize
-      }, 422)
+      render_unprocessable_entity_response(@user)
     end
   end
 
