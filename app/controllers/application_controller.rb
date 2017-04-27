@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   def doorkeeper_unauthorized_render_options(error: nil)
-    { json: { success: false, message: "Authorization Failed", errors: [{detail: "You are not authorized"}] } }
+    { json: { success: false, message: "Authorization Failed", data: [], errors: [{detail: "You are not authorized"}] } }
   end
 
   protected

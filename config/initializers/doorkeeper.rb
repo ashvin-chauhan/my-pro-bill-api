@@ -1,5 +1,6 @@
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (needs plugins)
+  require 'doorkeeper/helpers/doorkeeper_helper'
   orm :active_record
 
   # This block will be called to check whether the resource owner is authenticated or not.
@@ -12,7 +13,11 @@ Doorkeeper.configure do
 
   resource_owner_from_credentials do |routes|
     if params[:user_id].present?
-      client = User.find(params[:user_id])
+      begin
+        client = User.find(params[:user_id])
+      rescue
+        raise Doorkeeper::Errors::OwnError.new("Couldn't find Client with 'id'=#{params[:user_id]}'")
+      end
 
       # check for worker or sub admin login
       user = client.workers.find_for_database_authentication(email: params[:email])
@@ -34,7 +39,7 @@ Doorkeeper.configure do
     if user.present? && user.valid_password?(params[:password])
       user
     else
-      raise Doorkeeper::Errors::DoorkeeperError.new('Invalid email and password')
+      raise Doorkeeper::Errors::OwnError.new('Invalid email and password')
     end
   end
 
