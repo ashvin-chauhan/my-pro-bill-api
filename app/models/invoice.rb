@@ -22,6 +22,19 @@ class Invoice < ApplicationRecord
   scope :overdue_invoices, -> { joins(:service_ticket).where("service_tickets.due_date < ? AND invoices.status != ? AND invoices.status != ? ", Date.today, Invoice.statuses[:paid], Invoice.statuses[:overdue]) }
   scope :invoice_amount, -> { joins(:service_ticket => :service_ticket_items).sum('service_ticket_items.cost') }
 
+  # Getter methods
+  def created_at
+    self[:created_at].to_s
+  end
+
+  def updated_at
+    self[:updated_at].to_s
+  end
+
+  def sent_on
+    self[:sent_on].try(:strftime, "%m/%d/%Y %H:%M")
+  end
+
   private
 
   # class methods

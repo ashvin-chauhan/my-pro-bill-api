@@ -10,8 +10,8 @@
                         <td align="right" width="40%" style="padding-right: 15px;padding-top: 15px;">
                             <p style="color:#005B9A; font-size:14px; padding:0px; margin:0 0 5px 0;">Invoice #<%= @resource.invoice_number %></p>
                             <h2 style="color:#005B9A; text-transform: uppercase; padding:0px; margin:10px 0px;">Invoice</h2>
-                            <p style="color:#005B9A; font-size:14px; padding:0px; margin:5px 0px;">Invoice Date : <%= @resource.service_ticket.service_creation_date.strftime("%m/%d/%Y") %></p>
-                            <p style="color:#005B9A; font-size:14px; padding:0px; margin:5px 0px 15px 0px;">Due Date : <%= @resource.service_ticket.due_date.strftime("%m/%d/%Y") %></p>
+                            <p style="color:#005B9A; font-size:14px; padding:0px; margin:5px 0px;">Invoice Date : <%= @resource.service_ticket.service_creation_date.to_s %></p>
+                            <p style="color:#005B9A; font-size:14px; padding:0px; margin:5px 0px 15px 0px;">Due Date : <%= @resource.service_ticket.due_date.to_s %></p>
                         </td>
                     </tr>
                     <tr>
@@ -50,7 +50,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="5" align="right" style="color: #f00;padding: 5px 15px 15px 15px;">
-                                        Due Date : <%= @resource.service_ticket.due_date.strftime("%m/%d/%Y") %>
+                                        Due Date : <%= @resource.service_ticket.due_date.to_s %>
                                     </td>
                                 </tr>
                             </table>

@@ -4,10 +4,6 @@ class ClientExpenses::ClientExpenseAttributesSerializer < ActiveModel::Serialize
   belongs_to :expense_category, serializer: CategoryAttributesSerializer, :if => Proc.new { instance_options[:category] == true }
   has_many :client_expense_attachments, key: "client_expense_attachments", serializer: AttchmentAttributesSerializer, :if => Proc.new { instance_options[:attachment] == true }
 
-  def expense_date
-    object.try(:expense_date).try(:strftime, "%m/%d/%Y")
-  end
-
   def created_by
     object.created_by.full_name
   end

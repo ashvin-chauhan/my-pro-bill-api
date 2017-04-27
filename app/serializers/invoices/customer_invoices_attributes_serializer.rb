@@ -8,14 +8,6 @@ class Invoices::CustomerInvoicesAttributesSerializer < ActiveModel::Serializer
     object['amount']
   end
 
-  def generation_date
-    object.service_ticket.try(:service_creation_date).try(:strftime, "%m/%d/%Y")
-  end
-
-  def due_date
-    object.service_ticket.try(:due_date).try(:strftime, "%m/%d/%Y")
-  end
-
   def customer
     {
       full_name: object.customer.full_name,
