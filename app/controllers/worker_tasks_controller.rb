@@ -4,19 +4,37 @@ class WorkerTasksController < ApplicationController
 
   # GET  /clients/:user_id/workers/:id/tasks
   def index
-    @tasks = ClientTask.where(assign_to: @worker)
-    render json: array_serializer.new(@tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer), status: 200
+    @tasks = ClientTask.where(assign_to: @worker, client: @client)
+
+    json_response({
+      success: true,
+      data: {
+        worker_tasks: array_serializer.new(@tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer)
+      }
+    }, 200)
   end
 
-  # PATCH  /clients/:user_id/workers/:worker_id/tasks/:id
+  # PUT  /clients/:user_id/workers/:worker_id/tasks/:id
   def update
-    @task.update_attributes!(task_params) 
-    render json: @task, status: 201
+    @task.update_attributes!(task_params)
+    @task.update_status_fields(current_resource_owner)
+
+    json_response({
+      success: true,
+      data: {
+        worker_task: @task
+      }
+    }, 201)
   end
 
   # GET  /clients/:user_id/workers/:worker_id/tasks/:id
   def show
-    render json: @task, serializer: ClientTasks::TaskSerializer, status: 200 
+    json_response({
+      success: true,
+      data: {
+        worker_task: ClientTasks::TaskSerializer.new(@task)
+      }
+    }, 200)
   end
 
   private
@@ -26,11 +44,11 @@ class WorkerTasksController < ApplicationController
   end
 
   def get_task
-    @task = ClientTask.where(assign_to: @worker,id: params[:id]).first
+    @task = ClientTask.where(client: @client, assign_to: @worker).find(params[:id])
   end
 
   def task_params
-    params.require(:client_task).permit(:status)
+    params.require(:worker_task).permit(:status)
   end
 
 end

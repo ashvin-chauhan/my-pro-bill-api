@@ -7,63 +7,133 @@ class UsersController < ApplicationController
   # GET /subdomain_exist
   def subdomain_exist
     unless params[:subdomain].present?
-      render json: { error: 'Please supply subdomain' }, status: 400 and return
+      json_response({
+        success: false,
+        message: "Invalid parameters",
+        errors: [
+          {
+            detail: "Please supply subdomain"
+          }
+        ]
+      }, 400) and return
     end
 
     client = User.all_clients.find_by(subdomain: params[:subdomain])
     if client.present?
-      render json: client, status: 200
+      json_response({
+        success: true,
+        data: {
+          client: client
+        }
+      }, 200)
     else
-      render json: { error: 'Client with this subdomain is not exist' }, status: 404
+      json_response({
+        success: true,
+        message: "Record not found",
+        errors: [
+          {
+            detail: 'Client with this subdomain is not exist'
+          }
+        ]
+      }, 404)
     end
   end
 
   # GET  /clients
   def clients
     clients = User.all_clients
-    render json: clients, include: ['client_types'], status: 200
+
+    json_response({
+      success: true,
+      data: {
+        clients: clients.as_json(include: [:client_types])
+      }
+    }, 200)
   end
 
   # GET  /clients/:user_id/customers
   def customers
-    render json: array_serializer.new(@client.customers, serializer: Users::ClientCustomersAttributesSerializer, roles: false), status: 200
+    json_response({
+      success: true,
+      data: {
+        customers: array_serializer.new(@client.customers, serializer: Users::ClientCustomersAttributesSerializer, roles: false)
+      }
+    }, 200)
   end
 
   # GET  /clients/:user_id/users
   def client_users
-    render json: @client.workers, include: ['roles'], :except => [:username, :company, :subdomain], status: 200
+    json_response({
+      success: true,
+      data: {
+        users: @client.workers.as_json(include: [:roles], :except => [:username, :company, :subdomain])
+      }
+    }, 200)
   end
 
   # GET  /users/:id
   def show
     if @resource.client?
-      render json: @resource, include: ['roles', 'client_types'], status: 200
+      json_response({
+        success: true,
+        data: {
+          client: @resource.as_json(include: [:roles, :client_types])
+        }
+      }, 200)
     elsif @resource.customer?
-      render json: @resource, serializer: ClientCustomersAttributesSerializer, roles: true, status: 200
+      json_response({
+        success: true,
+        data: {
+          customer: Users::ClientCustomersAttributesSerializer.new(@resource, roles: true)
+        }
+      }, 200)
     elsif @resource.worker? || @resource.sub_admin?
-      render json: @resource, include: ['roles'], :except => [:username, :company, :subdomain], status: 200
+      json_response({
+        success: true,
+        data: {
+          user: @resource.as_json(include: [:roles], :except => [:username, :company, :subdomain])
+        }
+      }, 200)
     end
   end
 
   # PATCH  /users/update_password
   def update_password
-    @user = User.find(params[:user][:id])
+    @user = User.find(params[:id])
     if @user.update_with_password(user_params)
-      render json: {message: "Password updated successfully"}, status: 201
+      json_response({
+        success: true,
+        message: "Password updated successfully"
+      }, 201)
     else
-      render json: {error: @user.errors.full_messages}, status: :unprocessable_entity
+      json_response({
+        success: false,
+        message: "Validation Failed",
+        errors: ValidationErrorsSerializer.new(@user).serialize
+      }, 422)
     end
   end
 
   # GET /clients/:user_id/customers/:customer_id/invoices
   def invoices
-    render json: @customer, serializer: Invoices::InvoiceCustomerAttributesSerializer, status: 200
+    json_response({
+      success: true,
+      data: {
+        customer: Invoices::InvoiceCustomerAttributesSerializer.new(@customer)
+      }
+    }, 200)
   end
 
   # GET /clients/:user_id/dashboard_details
   def dashboard
     response = ClientDashboardDetail.new(@client).call
-    render json: response, status: 200
+
+    json_response({
+      success: true,
+      data: {
+        dashboard_details: response
+      }
+    }, 200)
   end
 
   private

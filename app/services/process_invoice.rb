@@ -47,7 +47,7 @@ class ProcessInvoice < BaseService
   def check_for_errors
     if InvoiceError.count > 0
       InvoiceError.all.each do |invoice_error|
-        return_hash << { resource: "invoice", id: invoice_error.invoice_id, detail: invoice_error.error_detail }
+        return_hash << { resource: "Invoice", id: invoice_error.invoice_id, detail: invoice_error.error_detail }
       end
       destroy_temp_table
       Error.new(nil, return_hash, 400)

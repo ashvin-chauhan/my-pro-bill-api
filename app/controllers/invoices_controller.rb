@@ -70,7 +70,7 @@ class InvoicesController < ApplicationController
             detail: "Please supply valid status"
           }
         ]
-      }, 404)
+      }, 400)
     end
   end
 

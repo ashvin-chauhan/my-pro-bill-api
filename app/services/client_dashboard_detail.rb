@@ -77,13 +77,11 @@ class ClientDashboardDetail
 
   def return_hash
     {
-      "data": {
-        total_customers: total_customers,
-        since: since,
-        snapshot: snapshot,
-        tasks: tasks,
-        overdue_invoices: overdue_invoices
-      }
+      total_customers: total_customers,
+      since: since,
+      snapshot: snapshot,
+      tasks: tasks,
+      overdue_invoices: overdue_invoices
     }
   end
 end
