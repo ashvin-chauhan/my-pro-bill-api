@@ -19,6 +19,10 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default :charset => "utf-8"
 
+  # Set developemtnt local timezone
+  config.time_zone = "Kolkata"
+  config.active_record.default_timezone = :local
+
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true

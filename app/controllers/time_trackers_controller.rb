@@ -3,13 +3,14 @@ class TimeTrackersController < ApplicationController
 
   # POST /clients/:user_id/workers/:worker_id/checkin
   def checkin
-    time_tracker = @worker.worker_time_trackers.create!(client: @client, date: Date.current, current_status: "checkin", time_logs_attributes: [ checkin: Time.now ])
-
-    render json: time_tracker, include: [:time_logs], status: 201
+    response = CheckinCheckout.new(@worker, @client).checkin
+    render json: response, status: 201
   end
 
   # PUT /clients/:user_id/workers/:worker_id/checkout
   def checkout
+    response = CheckinCheckout.new(@worker, nil, params).checkout
+    render json: response, status: 201
   end
 
   private
@@ -17,6 +18,4 @@ class TimeTrackersController < ApplicationController
   def get_worker
     @worker = @client.workers.find(params[:worker_id])
   end
-
-
 end

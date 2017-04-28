@@ -60,6 +60,7 @@ class User < ActiveRecord::Base
 
   has_many :time_trackers, foreign_key: "client_id", dependent: :destroy
   has_many :worker_time_trackers, class_name: "TimeTracker", foreign_key: "worker_id", dependent: :destroy
+  has_many :worker_time_logs, :through => :worker_time_trackers, :source => :time_logs
 
   # Scopes
   scope :all_super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
