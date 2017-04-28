@@ -4,6 +4,14 @@ class Invoices::CustomerInvoicesAttributesSerializer < ActiveModel::Serializer
   attribute :company_name, :if => Proc.new { instance_options[:service] == "true" }
   has_many :service_ticket, serializer: Invoices::InvoiceServiceTicketAttributesSerializer, :if => Proc.new { instance_options[:service] == "true" }
 
+  def generation_date
+    object.service_ticket.try(:service_creation_date)
+  end
+
+  def due_date
+    object.service_ticket.try(:due_date)
+  end
+
   def amount
     object['amount']
   end

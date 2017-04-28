@@ -6,8 +6,8 @@ module Filterable
       results = self.where(nil)
       filtering_params.each do |key, value|
         if key == "date_range"
-          start_date = value[:start_date].try(:to_date)
-          end_date = value[:end_date].try(:to_date)
+          start_date = Date.strptime(value[:start_date], "%m/%d/%Y")
+          end_date = Date.strptime(value[:end_date], "%m/%d/%Y")
 
           if start_date && end_date
             results = results.where("DATE(#{column('created_at')}) BETWEEN ? AND ?", start_date, end_date)
@@ -20,7 +20,7 @@ module Filterable
         elsif column_type(key) == :string
           results = results.where("#{column(key)} LIKE ?", "%#{value}%") if value.present?
         elsif column_type(key) == :date
-          results = results.where("#{column(key)} = ?", Date.parse(value)) if value.present?
+          results = results.where("DATE(#{column(key)}) = ?", Date.strptime(value, "%m/%d/%Y")) if value.present?
         else
           results = results.where("#{column(key)} = ?", value) if value.present?
         end

@@ -41,7 +41,7 @@ class ServiceTicket < ApplicationRecord
 
   # Callbacks
   def set_duedate
-    self.due_date = self.service_creation_date + 30.days if self.service_creation_date.present?
+    self.due_date = parse_date(service_creation_date) + 30.days if service_creation_date.present?
   end
 
   def create_invoice
