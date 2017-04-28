@@ -131,6 +131,15 @@ class User < ActiveRecord::Base
     "#{first_name.capitalize} #{last_name.capitalize}"
   end
 
+  # Getter methods
+  def created_at
+    self[:created_at].to_s
+  end
+
+  def updated_at
+    self[:updated_at].to_s
+  end
+
   private
 
   # Callbacks

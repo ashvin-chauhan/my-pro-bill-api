@@ -16,7 +16,7 @@ class ClientDashboardDetail
   end
 
   def since
-    client.try(:created_at).try(:strftime, "%m/%d/%Y")
+    client.try(:created_at)
   end
 
   def snapshot
@@ -66,7 +66,7 @@ class ClientDashboardDetail
       "invoices.id,
       invoice_number as invoice_number,
       SUM(service_ticket_items.cost) as amount,
-      invoices.created_at as invoice_date,
+      to_char(invoices.created_at, 'MM/DD/YYYY') as invoice_date,
       CASE
       WHEN customers.first_name is null AND customers.last_name is null THEN null
       WHEN customers.last_name is null THEN customers.first_name

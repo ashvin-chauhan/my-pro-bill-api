@@ -20,11 +20,28 @@ class ServiceTicket < ApplicationRecord
 
   enum status: { unprocessed: 0, processed: 1 }
 
+  # Getter methods
+  def created_at
+    self[:created_at].to_s
+  end
+
+  def updated_at
+    self[:updated_at].to_s
+  end
+
+  def service_creation_date
+    self[:service_creation_date].to_s
+  end
+
+  def due_date
+    self[:due_date].to_s
+  end
+
   private
 
   # Callbacks
   def set_duedate
-    self.due_date = self.service_creation_date + 30.days
+    self.due_date = parse_date(service_creation_date) + 30.days if service_creation_date.present?
   end
 
   def create_invoice

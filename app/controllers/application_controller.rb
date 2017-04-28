@@ -55,5 +55,9 @@ class ApplicationController < ActionController::API
   def array_serializer
     ActiveModel::Serializer::CollectionSerializer
   end
+
+  def parse_date(date)
+    Date.strptime(date, "%m/%d/%Y").to_datetime
+  end
 end
 
