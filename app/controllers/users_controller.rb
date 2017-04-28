@@ -10,7 +10,7 @@ class UsersController < ApplicationController
       render json: { error: 'Please supply subdomain' }, status: 400 and return
     end
 
-    client = User.all_clients.find_by(subdomain: params[:subdomain])
+    client = User.find_by(subdomain: params[:subdomain])
     if client.present?
       render json: client, status: 200
     else
