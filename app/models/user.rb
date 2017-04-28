@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
 
   has_many :client_tasks, foreign_key: "client_id", dependent: :destroy
   has_many :service_tickets, foreign_key: "client_id", dependent: :destroy
-  has_many :customer_service_tickets, class_name: "service_tickets", foreign_key: "customer_id", dependent: :destroy
+  has_many :customer_service_tickets, class_name: "ServiceTicket", foreign_key: "customer_id", dependent: :destroy
   has_many :customer_invoices, foreign_key: "customer_id", dependent: :destroy, class_name: "Invoice"
   has_many :client_invoices, :through => :service_tickets, :source => :invoice
 
