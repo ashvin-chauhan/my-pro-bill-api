@@ -58,6 +58,9 @@ class User < ActiveRecord::Base
   has_many :customer_invoices, foreign_key: "customer_id", dependent: :destroy, class_name: "Invoice"
   has_many :client_invoices, :through => :service_tickets, :source => :invoice
 
+  has_many :time_trackers, foreign_key: "client_id", dependent: :destroy
+  has_many :worker_time_trackers, class_name: "TimeTracker", foreign_key: "worker_id", dependent: :destroy
+
   # Scopes
   scope :all_super_admin, -> { joins(:roles).where(roles: {name: "Super Admin"}) }
   scope :all_clients, -> { joins(:roles).where(roles: {name: "Client Admin"}) }

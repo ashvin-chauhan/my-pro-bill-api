@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170425115931) do
+ActiveRecord::Schema.define(version: 20170428083053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -290,6 +290,31 @@ ActiveRecord::Schema.define(version: 20170425115931) do
     t.index ["deleted_at"], name: "index_services_on_deleted_at", using: :btree
   end
 
+  create_table "time_logs", force: :cascade do |t|
+    t.time     "checkin"
+    t.time     "checkout"
+    t.integer  "time_tracker_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["deleted_at"], name: "index_time_logs_on_deleted_at", using: :btree
+    t.index ["time_tracker_id"], name: "index_time_logs_on_time_tracker_id", using: :btree
+  end
+
+  create_table "time_trackers", force: :cascade do |t|
+    t.datetime "date"
+    t.integer  "worker_id"
+    t.integer  "client_id"
+    t.float    "total_time"
+    t.integer  "current_status"
+    t.datetime "deleted_at"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["client_id"], name: "index_time_trackers_on_client_id", using: :btree
+    t.index ["deleted_at"], name: "index_time_trackers_on_deleted_at", using: :btree
+    t.index ["worker_id"], name: "index_time_trackers_on_worker_id", using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "username",               default: "",    null: false
@@ -370,6 +395,9 @@ ActiveRecord::Schema.define(version: 20170425115931) do
   add_foreign_key "service_tickets", "users", column: "created_by_id"
   add_foreign_key "service_tickets", "users", column: "customer_id"
   add_foreign_key "services", "client_types"
+  add_foreign_key "time_logs", "time_trackers"
+  add_foreign_key "time_trackers", "users", column: "client_id"
+  add_foreign_key "time_trackers", "users", column: "worker_id"
   add_foreign_key "users_client_types", "client_types"
   add_foreign_key "users_client_types", "users"
 end

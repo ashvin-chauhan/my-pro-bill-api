@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  time: 2017-04-28 13:52:56
+  worker: one
+  client: one
+  total_time: MyString
+  float: MyString
+  current_status: 1
+
+two:
+  time: 2017-04-28 13:52:56
+  worker: two
+  client: two
+  total_time: MyString
+  float: MyString
+  current_status: 1
