@@ -61,4 +61,17 @@ Rails.application.configure do
       :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
     }
   }
+
+  #for mail
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address              => "smtp.gmail.com",
+    :port                 => 587,
+    :domain               => 'gmail.com',
+    :user_name            => 'bookbechotps@gmail.com',
+    :password             => 'bookbecho2015',
+    :authentication       => 'plain',
+    :enable_starttls_auto => true
+  }
 end
