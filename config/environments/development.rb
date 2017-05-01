@@ -63,15 +63,15 @@ Rails.application.configure do
   }
 
   #for mail
-  config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :domain               => 'gmail.com',
-    :user_name            => 'bookbechotps@gmail.com',
-    :password             => 'bookbecho2015',
-    :authentication       => 'plain',
-    :enable_starttls_auto => true
-  }
+  # config.action_mailer.raise_delivery_errors = true
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   :address => "smtp.sendgrid.net",
+  #   :port => 587,
+  #   :domain => "myprobill.com",
+  #   :authentication => :plain,
+  #   :user_name => "techplusqa",
+  #   :password => "techplus123",
+  #   :enable_starttls_auto => true
+  # }
 end
