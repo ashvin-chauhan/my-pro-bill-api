@@ -11,7 +11,7 @@
   .map { |role| Role.find_or_create_by(name: role) }
 
 [
-["super_admin@gmail.com", "SuperAdmin", "Hello123$", "SuperAdmin", 'SuperAdmin', '9999999999', 'SuperAdmin', 'SuperAdmin'],
+["super_admin@gmail.com", "SuperAdmin", "Hello@123", "SuperAdmin", 'SuperAdmin', '9999999999', 'SuperAdmin', 'SuperAdmin'],
 ]
 .map { |email, username, password, subdomain, company, phone, first_name, last_name|
   User.find_or_create_by!(email: email, username: username, subdomain: subdomain, company: company, phone: phone, first_name: first_name, last_name: last_name) do |user|

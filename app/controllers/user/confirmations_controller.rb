@@ -3,8 +3,8 @@ class User::ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
   def confirm
-    if params[resource_name].present? && params[resource_name][:confirmation_token].present? && request.subdomain.present?
-      self.resource = resource_class.find_by(confirmation_token: params[resource_name][:confirmation_token], subdomain: request.subdomain)
+    if params[resource_name].present? && params[resource_name][:confirmation_token].present? && params[resource_name][:subdomain].present?
+      self.resource = resource_class.find_by(confirmation_token: params[resource_name][:confirmation_token], subdomain: params[resource_name][:subdomain])
       if self.resource.present?
         resource.password = params[resource_name][:password]
         resource.password_confirmation = params[resource_name][:password_confirmation]

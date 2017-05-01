@@ -10,11 +10,11 @@ class UsersController < ApplicationController
       render json: { error: 'Please supply subdomain' }, status: 400 and return
     end
 
-    client = User.all_clients.find_by(subdomain: params[:subdomain])
-    if client.present?
-      render json: client, status: 200
+    user = User.joins(:roles).where("name = ? OR name = ?", "Super Admin", "Client Admin").find_by(subdomain: params[:subdomain])
+    if user.present?
+      render json: user, status: 200
     else
-      render json: { error: 'Client with this subdomain is not exist' }, status: 404
+      render json: { error: 'Super admin/Client with this subdomain is not exist' }, status: 404
     end
   end
 

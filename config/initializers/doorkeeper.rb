@@ -155,7 +155,7 @@ Doorkeeper::JWT.configure do
       user: {
         id: user.id,
         email: user.email,
-        issue_time: Time.now
+        issue_time: Time.now.to_i
       }
     }
   end
