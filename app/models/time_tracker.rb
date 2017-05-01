@@ -2,7 +2,7 @@ class TimeTracker < ApplicationRecord
   acts_as_paranoid
 
   # Callback
-  after_save_commit :update_total_time
+  after_save :update_total_time
 
   # Associations
   belongs_to :worker, class_name: "User"
@@ -28,6 +28,13 @@ class TimeTracker < ApplicationRecord
   private
 
   def update_total_time
-    
+    total_time = 0.0
+    self.time_logs.each do |time_log|
+      checkout = time_log.checkout.try(:to_time)
+      checkin = time_log.checkin.try(:to_time)
+      total_time += ((checkout - checkin)/1.hour).round(2) if checkout.present? && checkin.present?
+    end
+
+    self.update_column(:total_time, total_time)
   end
 end
