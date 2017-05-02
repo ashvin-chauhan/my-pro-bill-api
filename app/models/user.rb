@@ -50,7 +50,8 @@ class User < ActiveRecord::Base
   has_many  :workers, through: :clients_workers
 
   has_many  :customers_service_prices, foreign_key: "customer_id", dependent: :destroy
-  accepts_nested_attributes_for :customer, :customers_service_prices, allow_destroy: true
+  accepts_nested_attributes_for :customer, update_only: true
+  accepts_nested_attributes_for :customers_service_prices, allow_destroy: true
 
   has_many :client_tasks, foreign_key: "client_id", dependent: :destroy
   has_many :service_tickets, foreign_key: "client_id", dependent: :destroy
