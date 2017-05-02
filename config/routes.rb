@@ -39,20 +39,22 @@ Rails.application.routes.draw do
       resources :invoices, only: [:show, :update]
     end
 
-    resources :client_expenses,concerns: [:searchable]
+    resources :client_expenses, concerns: [:searchable]
 
     resources :tasks, :controller => "client_tasks" do
       put "mark_as_complete", on: :member
     end
+
+    resources :time_trackers, only: [:index], concerns: [:searchable]
 
     resources :workers, only: [] do
       collection do
         get "/tasks" => 'client_tasks#worker_tasks'
       end
       resources :worker_tasks, path: "/tasks", except: [:create,:destroy]
-      resources :time_trackers
-      post 'checkin' => "time_trackers#checkin"
-      put 'checkout' => "time_trackers#checkout"
+      resources :time_trackers, only: [:index, :show, :update], :controller => "worker_time_trackers"
+      post 'checkin' => "worker_time_trackers#checkin"
+      put 'checkout' => "worker_time_trackers#checkout"
     end
 
     resources :customers, only: [] do
