@@ -11,7 +11,7 @@
                     <tr>
                         <td bgcolor="#ffffff" align="left" width="100%" style="padding:20px 15px;border-bottom:1px dashed #ddd;">
                             <p style="color:#000000; font-size:18px; margin:18px 0px; width:100%; display:block;">Dear <b><%= @customer.full_name %></b></p>
-                            <p style="color:#000000; font-size:14px; margin:20px 0px 10px; width:100%; display:block;">Thank you for using our services - we appreciate you as a customer. Enclosed is your invoice for <b><%= @service_ticket.service_creation_date.strftime("%B") %>, <%= @service_ticket.service_creation_date.strftime("%Y") %></b></p>
+                            <p style="color:#000000; font-size:14px; margin:20px 0px 10px; width:100%; display:block;">Thank you for using our services - we appreciate you as a customer. Enclosed is your invoice for <b><%= Date.strptime(@service_ticket.service_creation_date, "%m/%d/%Y").to_datetime.strftime("%B") %>, <%= Date.strptime(@service_ticket.service_creation_date, "%m/%d/%Y").to_datetime.strftime("%Y") %></b></p>
                         </td>
                     </tr>
                     <tr>
