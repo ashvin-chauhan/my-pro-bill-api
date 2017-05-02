@@ -39,7 +39,7 @@ class UsersController < ApplicationController
     if @resource.client?
       render json: @resource, include: ['roles', 'client_types'], status: 200
     elsif @resource.customer?
-      render json: @resource, serializer: ClientCustomersAttributesSerializer, roles: true, status: 200
+      render json: @resource, serializer: Users::ClientCustomersAttributesSerializer, roles: true, status: 200
     elsif @resource.worker? || @resource.sub_admin?
       render json: @resource, include: ['roles'], :except => [:username, :company, :subdomain], status: 200
     end
