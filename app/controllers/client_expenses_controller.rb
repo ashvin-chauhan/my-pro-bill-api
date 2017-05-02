@@ -12,6 +12,13 @@ class ClientExpensesController < ApplicationController
 
   # POST /clients/:user_id/client_expenses
   def create
+    date = params[:client_expense][:expense_date]
+    begin
+      params[:client_expense][:expense_date] = parse_date(date) if date.present?
+    rescue
+      render json: {error: "Please supply valid date"}, status: 400 and return
+    end
+
     client_expense = @client.client_expenses.new(client_expsense_params)
     client_expense.created_by_id = current_resource_owner.id
     client_expense.save!
@@ -26,6 +33,13 @@ class ClientExpensesController < ApplicationController
 
   # PUT /clients/:user_id/client_expenses/:id
   def update
+    date = params[:client_expense][:expense_date]
+    begin
+      params[:client_expense][:expense_date] = parse_date(date) if date.present?
+    rescue
+      render json: {error: "Please supply valid date"}, status: 400 and return
+    end
+
     @client_expense.update_attributes(client_expsense_params)
     render json: @client_expense, serializer: ClientExpenses::ClientExpenseAttributesSerializer, status: 200
   end
