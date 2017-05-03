@@ -46,6 +46,8 @@ class ApplicationController < ActionController::API
       status = 404
     rescue ActiveRecord::RecordInvalid => e
       status = 403
+    rescue ArgumentError => e
+      status = 400
     rescue Exception => e
       status = 500
     end

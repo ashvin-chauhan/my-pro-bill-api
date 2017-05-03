@@ -4,12 +4,7 @@ class ServiceTicketsController < ApplicationController
 
   # POST /clients/:user_id/service_tickets
   def create
-    date = params[:service_ticket][:service_creation_date]
-    begin
-      params[:service_ticket][:service_creation_date] = Date.strptime(date, "%m/%d/%Y").to_datetime if date.present?
-    rescue
-      render json: {error: "Please supply valid date"}, status: 400 and return
-    end
+    params[:service_ticket][:service_creation_date] = parse_date(params[:service_ticket][:service_creation_date])
 
     service_ticket = @client.service_tickets.new(service_ticket_params)
     service_ticket.created_by = current_resource_owner
