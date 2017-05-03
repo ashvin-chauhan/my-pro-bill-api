@@ -24,8 +24,14 @@
             </tr>
             <tr>
               <td bgcolor="#ffffff" align="left" width="100%" height="100px" style="padding-left:15px;">
-                <%= link_to @resource.subdomain + ".myprobill.com" + "/active_account/" + @token, target: "_blank" do %>
-                  <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                <% if Rails.env.development? %>
+                  <%= link_to "http://" + @resource.subdomain + ".lvh.me:4200" + "/active_account/" + @token, target: "_blank" do %>
+                    <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                  <% end %>
+                <% elsif Rails.env.production? %>
+                  <%= link_to "http://" + @resource.subdomain + ".myprobill.com" + "/active_account/" + @token, target: "_blank" do %>
+                    <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                  <% end %>
                 <% end %>
               </td>
             </tr>
@@ -44,8 +50,14 @@
             </tr>
             <tr>
               <td bgcolor="#ffffff" align="left" width="100%" height="100px" style="padding-left:15px;">
-                <%= link_to @current_user.subdomain + ".myprobill.com" + "/active_account/#{@token}", target: "_blank" do %>
-                  <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                <% if Rails.env.development? %>
+                  <%= link_to "http://" + @current_user.subdomain + ".lvh.me:4200" + "/active_account/#{@token}", target: "_blank" do %>
+                    <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                  <% end %>
+                <% elsif Rails.env.production? %>
+                  <%= link_to "http://" + @current_user.subdomain + ".myprobill.com" + "/active_account/#{@token}", target: "_blank" do %>
+                    <img src="http://tpstracker.com/demo/RFP/newsletter/img/active-now.png" alt="">
+                  <% end %>
                 <% end %>
               </td>
             </tr>
