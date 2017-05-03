@@ -10,12 +10,7 @@ class ClientTasksController < ApplicationController
 
   # POST /clients/:user_id/tasks
   def create
-    date = params[:client_task][:due_date]
-    begin
-      params[:client_task][:due_date] = parse_date(date) if date.present?
-    rescue
-      render json: {error: "Please supply valid date"}, status: 400 and return
-    end
+    params[:client_task][:due_date] = parse_date(params[:client_task][:due_date])
 
     @resource = @client.client_tasks.new(resource_params)
     @resource.created_by_id = current_resource_owner.id
@@ -23,12 +18,7 @@ class ClientTasksController < ApplicationController
   end
 
   def update
-    date = params[:client_task][:due_date]
-    begin
-      params[:client_task][:due_date] = parse_date(date) if date.present?
-    rescue
-      render json: {error: "Please supply valid date"}, status: 400 and return
-    end
+    params[:client_task][:due_date] = parse_date(params[:client_task][:due_date])
 
     super
   end
