@@ -48,6 +48,20 @@ class ClientTasksController < ApplicationController
     head 200
   end
 
+  # GET /clients/:user_id/tasks/search
+  def search
+    if params[:status].present?
+      client_tasks =  @client.client_tasks.where(status: params[:status])
+      client_tasks = client_tasks.filter(class_search_params)
+    else
+      client_tasks = @client.client_tasks.filter(class_search_params)
+    end
+    render json: array_serializer.new(client_tasks, serializer: ClientTasks::TaskSerializer), status: 200
+  end
+
+  def class_search_params
+    params.slice(:status,:created_at,:assign_to_id)
+  end
   private
 
   def get_task
