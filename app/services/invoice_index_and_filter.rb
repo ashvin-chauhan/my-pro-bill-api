@@ -45,7 +45,7 @@ class InvoiceIndexAndFilter < BaseService
     ).group(
       :id
     ).select(
-      "SUM(service_ticket_items.cost) as amount, invoices.id, invoices.service_ticket_id, invoices.invoice_number, invoices.status, invoices.customer_id, invoices.created_at"
+      "SUM(service_ticket_items.cost) as amount, invoices.id, invoices.service_ticket_id, invoices.invoice_number, invoices.status, invoices.customer_id, invoices.created_at, invoices.sent_on"
     )
   end
 
