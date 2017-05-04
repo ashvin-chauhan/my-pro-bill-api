@@ -32,7 +32,7 @@ class WorkerTimeTrackersController < ApplicationController
 
   # GET /clients/:user_id/workers/:worker_id/time_trackers/:id
   def show
-    render json: TimeTrackers::TimeTrackerAttributesSerializer.new(@time_tracker), status: 200
+    render json: TimeTrackers::TimeTrackerAttributesSerializer.new(@time_tracker), worker: true, status: 200
   end
 
   # PUT /clients/:user_id/workers/:worker_id/time_trackers/:id
