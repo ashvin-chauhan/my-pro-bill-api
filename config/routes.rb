@@ -36,7 +36,9 @@ Rails.application.routes.draw do
     end
     resources :expense_categories
     resources :service_tickets, only: [:create] do
-      resources :invoices, only: [:show, :update]
+      resources :invoices, only: [:show, :update] do
+        get "download" => "invoices#download", on: :member
+      end
     end
 
     resources :client_expenses, concerns: [:searchable]
