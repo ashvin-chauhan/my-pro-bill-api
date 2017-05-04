@@ -68,6 +68,7 @@ class User < ActiveRecord::Base
   scope :all_clients, -> { joins(:roles).where(roles: {name: "Client Admin"}) }
   scope :all_workers, -> { joins(:roles).where(roles: {name: "Worker"}) }
   scope :all_customers, -> { joins(:roles).where(roles: {name: "Customer"}) }
+  scope :filter_using_character, -> (character) { where("LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?", "#{character.to_s.downcase}%") }
 
   # Instance method
   def super_admin?
