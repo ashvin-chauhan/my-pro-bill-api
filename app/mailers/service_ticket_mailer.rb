@@ -19,15 +19,8 @@ class ServiceTicketMailer < ApplicationMailer
         @customer = invoice.customer
         @service_ticket = invoice.service_ticket
 
-        # Call pdf generator service for generate pdf
+        # Call pdf generator service for generate pdf and save in public directory
         pdf = PdfGenerator.new({action: 'invoices', view: 'process_invoice', resource: @invoice}).call
-
-        # Save generated pdf in public directory
-        CommonService.create_folder("invoices")
-        save_path = Rails.root.join('public/invoices',"invoice#{@invoice.id}.pdf")
-        File.open(save_path, 'wb') do |file|
-          file << pdf
-        end
 
         attachments['invoice.pdf'] = pdf
         mail(to: @customer.try(:email), subject: "Invoice")

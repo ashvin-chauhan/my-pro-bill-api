@@ -12,6 +12,9 @@ class PdfGenerator
             :handlers => [:erb],
             :disable_smart_shrinking => true,
           )
+    save_pdf(pdf)
+
+    pdf
   end
 
   private
@@ -20,5 +23,14 @@ class PdfGenerator
     html = File.read(Rails.root.join('app', 'views', action, view.to_s + '.html.erb'))
     html = ERB.new(html).result(binding)
     html
+  end
+
+  # Save generated pdf in public directory
+  def save_pdf(pdf)
+    CommonService.create_folder("invoices")
+    save_path = Rails.root.join('public/invoices',"invoice#{resource.id}.pdf")
+    File.open(save_path, 'wb') do |file|
+      file << pdf
+    end
   end
 end
