@@ -43,7 +43,7 @@ Rails.application.routes.draw do
 
     resources :client_expenses, concerns: [:searchable]
 
-    resources :tasks, :controller => "client_tasks" do
+    resources :tasks, :controller => "client_tasks",  concerns: [:searchable] do
       put "mark_as_complete", on: :member
     end
 
