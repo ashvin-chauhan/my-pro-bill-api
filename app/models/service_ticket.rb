@@ -47,6 +47,8 @@ class ServiceTicket < ApplicationRecord
   def create_invoice
     invoice = self.build_invoice(customer_id: self.customer_id, invoice_number: Invoice.next_invoice_number)
     invoice.save!
+
+    PdfGenerator.new({action: 'invoices', view: 'process_invoice', resource: invoice}).call
   end
   handle_asynchronously :create_invoice
 

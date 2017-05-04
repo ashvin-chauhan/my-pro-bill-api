@@ -1,5 +1,5 @@
 require 'fileutils'
-class CommonService
+class CommonService < BaseService
 
   # Class Methods
   class << self
@@ -15,6 +15,15 @@ class CommonService
           t.integer :invoice_id
           t.text :error_detail
         end
+      end
+    end
+
+    def invoice_pdf_exist!(invoice)
+      path = Rails.root.join("public/invoices", "invoice#{invoice.id}.pdf")
+      if FileTest.exist?(path)
+        Success.new(path, nil, 200)
+      else
+        Error.new(nil, nil, 400)
       end
     end
   end
