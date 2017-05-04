@@ -73,6 +73,3 @@ gem 'wkhtmltopdf-binary', "~> 0.9.9"
 
 # For create temporary table
 gem "temping"
-
-# For pagination
-gem 'kaminari'

@@ -26,21 +26,7 @@ class UsersController < ApplicationController
 
   # GET  /clients/:user_id/customers
   def customers
-    data = @client.customers.filter_using_character(
-        params[:character]
-      ).page(
-        params[:page]
-      ).per(
-        params[:per_page]
-      )
-
-    json_response({
-      success: true,
-      data: {
-        customers: array_serializer.new(data, serializer: Users::ClientCustomersAttributesSerializer, roles: false)
-      },
-      meta: meta_attributes(data)
-    }, 200)
+    render json: array_serializer.new(@client.customers, serializer: Users::ClientCustomersAttributesSerializer, roles: false), status: 200
   end
 
   # GET  /clients/:user_id/users
