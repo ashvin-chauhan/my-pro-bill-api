@@ -61,21 +61,5 @@ class ApplicationController < ActionController::API
   def parse_date(date)
     Date.strptime(date, "%m/%d/%Y").to_datetime
   end
-
-  def meta_attributes(collection, extra_meta = {})
-    {
-      pagination: {
-        current_page: collection.current_page,
-        next_page: collection.next_page,
-        prev_page: collection.prev_page, # use collection.previous_page when using will_paginate
-        total_pages: collection.total_pages,
-        total_count: collection.total_count
-      }
-    }.merge(extra_meta)
-  end
-
-  def json_response(options = {}, status = 500)
-    render json: JsonResponse.new(options), status: status
-  end
 end
 
