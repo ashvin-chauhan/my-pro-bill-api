@@ -27,7 +27,7 @@ class WorkerTimeTrackersController < ApplicationController
         ],
         methods: [:full_name]
       ),
-      today_status: today_time_tracker.try(:current_status),
+      today_time_tracker: TimeTrackers::CheckinCheckoutAttributesSerializer.new(today_time_tracker),
       time_trackers: array_serializer.new(time_trackers, serializer: TimeTrackers::TimeTrackerAttributesSerializer)
     }, status: 200
   end
