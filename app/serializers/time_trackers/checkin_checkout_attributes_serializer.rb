@@ -1,5 +1,5 @@
 class TimeTrackers::CheckinCheckoutAttributesSerializer < ActiveModel::Serializer
-  attributes :id, :worker_id, :date, :current_status, :time_log_attributes
+  attributes :id, :worker_id, :date, :current_status, :total_time, :time_log_attributes
 
   def time_log_attributes
     if instance_options[:time_log_id]

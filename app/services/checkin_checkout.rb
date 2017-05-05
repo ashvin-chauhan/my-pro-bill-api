@@ -32,7 +32,8 @@ class CheckinCheckout
      "id,
       worker_id,
       date,
-      current_status"
+      current_status,
+      total_time"
     ).last
   end
 
