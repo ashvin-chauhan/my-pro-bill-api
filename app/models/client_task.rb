@@ -1,4 +1,5 @@
 class ClientTask < ApplicationRecord
+  include Filterable
   acts_as_paranoid
 
   # Associations

@@ -6,7 +6,7 @@ class Customer < ApplicationRecord
 
   enum billing_period: {
     "weekly": 0,
-    "by_weekly": 1,
+    "biweekly": 1,
     "monthly": 2,
     "fixed": 3
   }, _suffix: true

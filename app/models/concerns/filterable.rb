@@ -19,7 +19,7 @@ module Filterable
 
         elsif column_type(key) == :string
           results = results.where("#{column(key)} LIKE ?", "%#{value}%") if value.present?
-        elsif column_type(key) == :date
+        elsif column_type(key) == :date || column_type(key) == :datetime
           results = results.where("DATE(#{column(key)}) = ?", Date.strptime(value, "%m/%d/%Y")) if value.present?
         else
           results = results.where("#{column(key)} = ?", value) if value.present?

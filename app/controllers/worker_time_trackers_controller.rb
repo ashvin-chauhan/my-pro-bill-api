@@ -17,6 +17,7 @@ class WorkerTimeTrackersController < ApplicationController
   # GET /clients/:user_id/workers/:worker_id/time_trackers
   def index
     time_trackers = @worker.worker_time_trackers.includes(:worker, :time_logs)
+    today_time_tracker = time_trackers.where(date: Date.current).last
 
     render json: {
       worker: @worker.as_json(
@@ -26,13 +27,14 @@ class WorkerTimeTrackersController < ApplicationController
         ],
         methods: [:full_name]
       ),
+      today_status: today_time_tracker.try(:current_status),
       time_trackers: array_serializer.new(time_trackers, serializer: TimeTrackers::TimeTrackerAttributesSerializer)
     }, status: 200
   end
 
   # GET /clients/:user_id/workers/:worker_id/time_trackers/:id
   def show
-    render json: TimeTrackers::TimeTrackerAttributesSerializer.new(@time_tracker), status: 200
+    render json: TimeTrackers::TimeTrackerAttributesSerializer.new(@time_tracker), worker: true, status: 200
   end
 
   # PUT /clients/:user_id/workers/:worker_id/time_trackers/:id

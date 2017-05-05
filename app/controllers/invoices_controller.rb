@@ -2,6 +2,7 @@ class InvoicesController < ApplicationController
   include InheritAction
   before_action :get_client
   before_action :get_service_ticket, except: [:index, :search, :process_invoice]
+  before_action :get_invoice, only: [:show, :download]
 
   # GET /clients/:user_id/invoices
   def index
@@ -17,13 +18,13 @@ class InvoicesController < ApplicationController
 
   # GET /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id
   def show
-    render json: @service_ticket.invoice, include: ['service_ticket'], except: [:service_ticket_id], status: 200
+    render json: @invoice, include: ['service_ticket'], except: [:service_ticket_id], status: 200
   end
 
   # PUT /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id
   def update
     status_param = params[:invoice][:status]
-    invoice = Invoice.where(service_ticket_id: @service_ticket)
+    invoice = Invoice.where(service_ticket_id: @service_ticket, id: params[:id])
 
     if status_param == "sent" || status_param == "paid"
       if status_param == "sent"
@@ -56,10 +57,26 @@ class InvoicesController < ApplicationController
     process_invoice_response(response)
   end
 
+  # GET /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id/download
+  def download
+    path = CommonService.invoice_pdf_exist!(@invoice)
+    if path.success?
+      pdf = File.read(path.data)
+    else
+      pdf = PdfGenerator.new({action: 'invoices', view: 'process_invoice', resource: @invoice}).call
+    end
+
+    send_data pdf, :disposition => 'inline', :type => 'application/pdf'
+  end
+
   private
 
   def get_service_ticket
     @service_ticket = @client.service_tickets.find(params[:service_ticket_id])
+  end
+
+  def get_invoice
+    @invoice = Invoice.where(service_ticket_id: @service_ticket).find(params[:id])
   end
 
   def process_invoice_response(response)
