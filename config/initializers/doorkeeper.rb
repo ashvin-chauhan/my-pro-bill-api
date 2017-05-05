@@ -34,6 +34,7 @@ Doorkeeper.configure do
     if user.present? && user.valid_password?(params[:password])
       user
     else
+      raise Doorkeeper::Errors::DoorkeeperError.new('Your account is deleted') if User.only_deleted.where(email: params[:email]).last
       raise Doorkeeper::Errors::DoorkeeperError.new('Invalid email and password')
     end
   end

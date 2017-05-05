@@ -44,6 +44,7 @@
                 <p style="color:#000000; font-size:14px; margin:20px 0px 10px; width:100%; display:block;">
                   <b>You are invited in <%= @current_user.company %> Company as <%= @resource.roles.first.try(:name) %>.</b>
                 </p>
+                <p>Subdomain: <%= @current_user.subdomain %></p>
                 <p>Email: <%= @resource.email %></p>
                 <p>Last name: <%= @resource.last_name %></p>
               </td>
