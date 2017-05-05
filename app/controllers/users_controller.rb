@@ -21,12 +21,14 @@ class UsersController < ApplicationController
   # GET  /clients
   def clients
     clients = User.all_clients
-    render json: clients, include: ['client_types'], status: 200
+    render json: clients.includes(:client_types), include: ['client_types'], status: 200
   end
 
   # GET  /clients/:user_id/customers
   def customers
-    data = @client.customers.filter_using_character(
+    data = @client.customers.includes(
+        :customer, :customer_clients, :roles, customers_service_prices: :client_service
+      ).filter_using_character(
         params[:character]
       ).page(
         params[:page]
@@ -45,7 +47,7 @@ class UsersController < ApplicationController
 
   # GET  /clients/:user_id/users
   def client_users
-    render json: @client.workers, include: ['roles'], :except => [:username, :company, :subdomain], status: 200
+    render json: @client.workers.includes(:roles), include: ['roles'], :except => [:username, :company, :subdomain], status: 200
   end
 
   # GET  /users/:id
@@ -71,7 +73,7 @@ class UsersController < ApplicationController
 
   # GET /clients/:user_id/customers/:customer_id/invoices
   def invoices
-    render json: @customer, serializer: Invoices::InvoiceCustomerAttributesSerializer, status: 200
+    render json: @customer.includes(:customer_invoices), serializer: Invoices::InvoiceCustomerAttributesSerializer, status: 200
   end
 
   # GET /clients/:user_id/dashboard_details
