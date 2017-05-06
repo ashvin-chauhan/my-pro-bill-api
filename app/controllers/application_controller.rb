@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
   include ResourceFinder
   before_action :doorkeeper_authorize!
-  around_action :handle_exceptions
+#   around_action :handle_exceptions
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   def doorkeeper_unauthorized_render_options(error: nil)
