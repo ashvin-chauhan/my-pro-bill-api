@@ -7,7 +7,7 @@ class Invoices::InvoiceCustomerAttributesSerializer < ActiveModel::Serializer
   end
 
   def total_unpaid
-    Invoice.unpaid.invoice_amount
+    (Invoice.unpaid.invoice_amount || 0.0) + (Invoice.sent.invoice_amount || 0.0)
   end
 
   def total_overdue
