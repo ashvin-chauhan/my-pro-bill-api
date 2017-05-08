@@ -125,7 +125,7 @@ class User < ActiveRecord::Base
   end
 
   def active_user
-    self.update_attributes(active:true)
+    self.update_attributes(active: true)
   end
 
   def full_name
