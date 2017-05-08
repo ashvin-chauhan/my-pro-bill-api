@@ -24,7 +24,11 @@ module Clockwork
   # end
 
   # Kick off a bunch of jobs early in the morning
-  every 1.day, 'Mark invoice to overdue', :at => "00:01" do
+  # every 1.day, 'Mark invoice to overdue', :at => "00:01" do
+  #   ::Invoice.mark_as_overdue
+  # end
+
+   every 1.seconds, 'Mark invoice to overdue' do
     ::Invoice.mark_as_overdue
   end
 end
