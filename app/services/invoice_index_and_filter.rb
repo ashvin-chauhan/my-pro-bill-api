@@ -48,7 +48,7 @@ class InvoiceIndexAndFilter < BaseService
       service_ticket: :service_ticket_items
     ).includes(
       :customer,
-      service_ticket: [:service_ticket_items, :client]
+      service_ticket: [:client, service_ticket_items: :client_service]
     ).group(
       :id
     ).select(
