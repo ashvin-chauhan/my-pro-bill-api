@@ -9,7 +9,9 @@ class ClientTasksController < ApplicationController
 
     json_response({
       success: true,
-      data: { client_task: array_serializer.new(client_tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer) },
+      data: {
+        client_task: array_serializer.new(client_tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer) 
+      },
       meta: meta_attributes(client_tasks)
     }, 200)
   end
@@ -21,7 +23,9 @@ class ClientTasksController < ApplicationController
 
     json_response({
       success: true,
-      data: { client_task: array_serializer.new(client_tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer) },
+      data: {
+        client_task: array_serializer.new(client_tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer)
+      },
       meta: meta_attributes(client_tasks)
     }, 200)
   end
