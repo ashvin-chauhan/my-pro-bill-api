@@ -9,7 +9,7 @@ class ClientTask < ApplicationRecord
   belongs_to :mark_as_completed_by, class_name: "User"
   belongs_to :created_by, class_name: "User"
 
-  enum status: { pending: 0, completed: 1 }
+  enum status: { todo: 0, completed: 1 }
 
   # Getter methods
   def due_date

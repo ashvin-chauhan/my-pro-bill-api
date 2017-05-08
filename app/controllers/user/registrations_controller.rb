@@ -46,7 +46,7 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # PUT /resource
   def update
-    resource.skip_confirmation_notification! if resource.customer?
+    resource.skip_reconfirmation! if resource.customer?
     prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
     resource_updated = update_resource(resource, account_update_params)
