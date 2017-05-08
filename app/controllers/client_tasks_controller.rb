@@ -67,7 +67,7 @@ class ClientTasksController < ApplicationController
   end
 
   def class_search_params
-    params.slice(:created_at, :assign_to_id)
+    params.slice(:created_at,:assign_to_id)
   end
 
   private

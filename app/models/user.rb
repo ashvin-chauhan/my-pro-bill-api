@@ -16,8 +16,8 @@ class User < ActiveRecord::Base
     (?=.*[[:^alnum:]]) # Must contain a symbol
   /x
 
-  validates :subdomain, :company ,presence: true, uniqueness: true, if: :check_role?
-  validates :phone, presence: true, uniqueness: true
+  validates :subdomain, :company ,presence: true, uniqueness: {:scope => :deleted_at}, if: :check_role?
+  validates :phone, presence: true
   validates :first_name, :last_name, presence: true
   validates :password, allow_nil: true, length: {in: Devise.password_length }, format: { with: PASSWORD_FORMAT, message: "Must in format of upper and lower case mix with at least 1 number and 1 special character." }
 
