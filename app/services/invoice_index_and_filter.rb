@@ -18,26 +18,33 @@ class InvoiceIndexAndFilter < BaseService
   private
 
   def index_invoices
-    invoices = invoice_with_selected_columns
-    invoices = filter_using_invoice_ids(invoices) if params[:invoice_ids]
+    invoices = client_invoices
+    invoices = filter_using_invoice_ids(invoices)  if params[:invoice_ids]
     status_with_amt = statuswise_amount(invoices)
+    invoices = invoice_with_selected_columns(invoices)
     return_hash(invoices, status_with_amt)
   end
 
   def search_invoices
-    invoices = filter_using_params
+    invoices = client_invoices
+    invoices = filter_using_params(invoices)
     status_with_amt = statuswise_amount(invoices)
+    invoices = invoice_with_selected_columns(invoices)
     return_hash(invoices, status_with_amt)
   end
 
   # Get client invoices
   def client_invoices
-    client.client_invoices
+    client.client_invoices.page(
+      params[:page]
+    ).per(
+      params[:per_page]
+    )
   end
 
   # Get invoices with selected columns
-  def invoice_with_selected_columns
-    client_invoices.joins(
+  def invoice_with_selected_columns(invoices)
+    invoices.joins(
       service_ticket: :service_ticket_items
     ).includes(
       :customer,
@@ -51,10 +58,12 @@ class InvoiceIndexAndFilter < BaseService
 
   # Get invoices amount with group of status
   def statuswise_amount(invoices)
-    invoices.unscope(
-      :group
+    Invoice.from(
+      invoices, :invoices
+    ).joins(
+      service_ticket: :service_ticket_items
     ).group(
-      :status
+      'invoices.status'
     ).sum(
       'service_ticket_items.cost'
     )
@@ -62,7 +71,7 @@ class InvoiceIndexAndFilter < BaseService
 
   # Filter index invoices if invoice ids present otherwise return client all invoices
   def filter_using_invoice_ids(invoices)
-    invoice_with_selected_columns.where("invoices.id IN (?)", JSON.parse(params[:invoice_ids]))
+    invoices.where("invoices.id IN (?)", JSON.parse(params[:invoice_ids]))
   end
 
   # Permit parameter for search invoices
@@ -72,8 +81,8 @@ class InvoiceIndexAndFilter < BaseService
   end
 
   # Filter invoices based on params
-  def filter_using_params
-    invoices = invoice_with_selected_columns.filter(class_search_params)
+  def filter_using_params(invoices)
+    invoices = invoices.filter(class_search_params)
     if params[:status].present?
       invoices = invoices.where(status: params[:status])
     end
@@ -82,14 +91,17 @@ class InvoiceIndexAndFilter < BaseService
 
   def return_hash(invoices, status_with_amt)
     {
-      total_paid: status_with_amt['paid'] || 0.0,
-      total_unpaid: (status_with_amt['unpaid'] || 0.0) + (status_with_amt['sent'] || 0.0),
-      total_overdue: status_with_amt['overdue'] || 0.0,
-      total_unsent: status_with_amt['unsent'] || 0.0,
-      total_sent: status_with_amt['sent'] || 0.0,
-      invoices: ActiveModel::Serializer::CollectionSerializer.new(
-        invoices, serializer: Invoices::CustomerInvoicesAttributesSerializer, customer: true, service: params[:with_service_details]
-      )
+      data: {
+        total_paid: status_with_amt['paid'] || 0.0,
+        total_unpaid: (status_with_amt['unpaid'] || 0.0) + (status_with_amt['sent'] || 0.0),
+        total_overdue: status_with_amt['overdue'] || 0.0,
+        total_unsent: status_with_amt['unsent'] || 0.0,
+        total_sent: status_with_amt['sent'] || 0.0,
+        invoices: ActiveModel::Serializer::CollectionSerializer.new(
+          invoices, serializer: Invoices::CustomerInvoicesAttributesSerializer, customer: true, service: params[:with_service_details]
+        )
+      },
+      invoices: invoices
     }
   end
 end

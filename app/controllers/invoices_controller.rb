@@ -7,13 +7,23 @@ class InvoicesController < ApplicationController
   # GET /clients/:user_id/invoices
   def index
     response = InvoiceIndexAndFilter.new(@client, params, { from_index: true }).call
-    render json: response, status: 200
+
+    json_response({
+      success: true,
+      data: response[:data],
+      meta: meta_attributes(response[:invoices])
+    }, 200)
   end
 
   # GET /clients/:user_id/invoices/search
   def search
     response = InvoiceIndexAndFilter.new(@client, params, { from_search: true }).call
-    render json: response, status: 200
+
+    json_response({
+      success: true,
+      data: response[:data],
+      meta: meta_attributes(response[:invoices])
+    }, 200)
   end
 
   # GET /clients/:user_id/service_tickets/:service_ticket_id/invoices/:id
