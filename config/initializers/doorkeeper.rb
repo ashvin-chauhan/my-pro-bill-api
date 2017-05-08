@@ -32,7 +32,8 @@ Doorkeeper.configure do
     end
 
     if user.present?
-      raise Doorkeeper::Errors::DoorkeeperError.new('Please activate your account first.') unless user.active
+      raise Doorkeeper::Errors::DoorkeeperError.new('Please activate your account first.') unless user.confirmed?
+      raise Doorkeeper::Errors::DoorkeeperError.new('Your account is deactivated.') unless user.active
       user if user.valid_password?(params[:password])
     else
       raise Doorkeeper::Errors::DoorkeeperError.new('Your account is deleted') if User.only_deleted.where(email: params[:email]).last
