@@ -12,7 +12,7 @@ class ApplicationController < ActionController::API
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(
-      :sign_up, keys: [:first_name, :last_name, :email, :subdomain, :phone, :company, :active, :nick_name, :address, :city, :state, :country, :zip, :alternate_phone, :alternate_email ,client_type_ids: [], role_names: [], customer_client_ids: [], worker_client_ids: [],
+      :sign_up, keys: [:first_name, :last_name, :email, :subdomain, :phone, :company, :nick_name, :address, :city, :state, :country, :zip, :alternate_phone, :alternate_email ,client_type_ids: [], role_names: [], customer_client_ids: [], worker_client_ids: [],
       customer_attributes: [:billing_period, :should_print_invoice, billing_notifications: [], service_notifications: []],
       customers_service_prices_attributes: [:client_service_id, :price]
     ])
