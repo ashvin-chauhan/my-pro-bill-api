@@ -17,6 +17,7 @@ class ClientExpense < ApplicationRecord
   validates :expense_name, length: { maximum: 50 }
   validates :vendor_name, length: { maximum: 30 }
   validates :description, length: { maximum: 100 }
+  validates :expense_date, :presence => true
 
   # Getter methods
   def expense_date
