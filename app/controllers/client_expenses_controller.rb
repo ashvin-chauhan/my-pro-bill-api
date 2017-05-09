@@ -12,7 +12,7 @@ class ClientExpensesController < ApplicationController
 
   # POST /clients/:user_id/client_expenses
   def create
-    params[:client_expense][:expense_date] = parse_date(params[:client_expense][:expense_date])
+    params[:client_expense][:expense_date] = parse_date(params[:client_expense][:expense_date]) if params[:client_expense][:expense_date].present?
 
     client_expense = @client.client_expenses.new(client_expsense_params)
     client_expense.created_by_id = current_resource_owner.id

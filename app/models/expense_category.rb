@@ -5,6 +5,9 @@ class ExpenseCategory < ApplicationRecord
   belongs_to :client, class_name: 'User'
   has_many :client_expenses, dependent: :destroy
 
+  # Validations
+  validates :expense_category_name, :presence => true
+
   # Getter methods
   def created_at
     self[:created_at].to_s
