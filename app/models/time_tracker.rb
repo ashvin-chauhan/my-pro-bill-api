@@ -26,7 +26,12 @@ class TimeTracker < ApplicationRecord
     self[:updated_at].to_s
   end
 
-  private
+  def total_time
+    sec = (self[:total_time] * 3600).to_i
+    min, sec = sec.divmod(60)
+    hour, min = min.divmod(60)
+    "%02d:%02d" % [hour, min]
+  end
 
   def update_total_time
     total_time = 0.0

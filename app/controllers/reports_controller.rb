@@ -4,6 +4,10 @@ class ReportsController < ApplicationController
   # GET /clients/:user_id/reports/summary
   def summary
     response = Report::Summary.new(@client, params).call
-    render json: response, status: 200
+
+    json_response({
+      success: true,
+      data: response
+    }, 200)
   end
 end
