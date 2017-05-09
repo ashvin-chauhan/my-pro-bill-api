@@ -5,9 +5,38 @@ class ClientExpensesController < ApplicationController
 
   # GET /clients/:user_id/client_expenses
   def index
-    client_expenses = @client.client_expenses
+    client_expenses = @client.client_expenses.page(
+      params[:page]
+    ).per(
+      params[:per_page]
+    )
 
-    render json: array_serializer.new(client_expenses, serializer: ClientExpenses::ClientExpenseAttributesSerializer), status: 200
+    json_response({
+      success: true,
+      data: {
+        client_expenses: array_serializer.new(client_expenses, serializer: ClientExpenses::ClientExpenseAttributesSerializer)
+      },
+      meta: meta_attributes(client_expenses)
+    }, 200)
+  end
+
+  # GET /clients/:user_id/client_expenses/search
+  def search
+    client_expenses = @client.client_expenses.filter(
+      class_search_params
+    ).page(
+      params[:page]
+    ).per(
+      params[:per_page]
+    )
+
+    json_response({
+      success: true,
+      data: {
+        client_expenses: array_serializer.new(client_expenses, serializer: ClientExpenses::ClientExpenseAttributesSerializer)
+      },
+      meta: meta_attributes(client_expenses)
+    }, 200)
   end
 
   # POST /clients/:user_id/client_expenses
@@ -42,12 +71,6 @@ class ClientExpensesController < ApplicationController
 
   def class_search_params
     params.slice(:expense_date)
-  end
-
-  # GET /clients/:user_id/client_expenses/search
-  def search
-    client_expenses = @client.client_expenses.filter(class_search_params)
-    render json: array_serializer.new(client_expenses, serializer: ClientExpenses::ClientExpenseAttributesSerializer), status: 200
   end
 
   private
