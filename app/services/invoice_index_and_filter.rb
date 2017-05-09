@@ -93,10 +93,9 @@ class InvoiceIndexAndFilter < BaseService
     {
       data: {
         total_paid: status_with_amt['paid'] || 0.0,
-        total_unpaid: (status_with_amt['unpaid'] || 0.0) + (status_with_amt['sent'] || 0.0),
+        total_unpaid: status_with_amt['unpaid'] || 0.0,
         total_overdue: status_with_amt['overdue'] || 0.0,
         total_unsent: status_with_amt['unsent'] || 0.0,
-        total_sent: status_with_amt['sent'] || 0.0,
         invoices: ActiveModel::Serializer::CollectionSerializer.new(
           invoices, serializer: Invoices::CustomerInvoicesAttributesSerializer, customer: true, service: params[:with_service_details]
         )

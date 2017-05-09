@@ -38,10 +38,10 @@ class InvoicesController < ApplicationController
 
     if status_param == "sent" || status_param == "paid"
       if status_param == "sent"
-        if !invoice.first.sent?
+        if !invoice.first.unpaid?
           response = ProcessInvoice.new(invoice, current_resource_owner).call
           process_invoice_response(response)
-        elsif invoice.first.sent?
+        elsif invoice.first.unpaid?
           render json: { error: "Invoice is already sent" }, status: 208 and return
         end
 
@@ -57,7 +57,7 @@ class InvoicesController < ApplicationController
 
   # POST /clients/:user_id/invoices/process
   def process_invoice
-    invoices = @client.client_invoices.where("invoices.id IN (?) AND invoices.status != ?", params[:invoices][:invoice_ids], Invoice.statuses[:sent]).includes(:customer, service_ticket: :service_ticket_items)
+    invoices = @client.client_invoices.where("invoices.id IN (?) AND invoices.status != ?", params[:invoices][:invoice_ids], Invoice.statuses[:unpaid]).includes(:customer, service_ticket: :service_ticket_items)
 
     if invoices.empty?
       render json: { message: "Invoice(s) are already sent" }, status: 208 and return

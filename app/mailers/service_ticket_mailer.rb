@@ -29,7 +29,7 @@ class ServiceTicketMailer < ApplicationMailer
 
         attachments['invoice.pdf'] = pdf
         mail(to: @customer.try(:email), subject: "Invoice")
-        @invoice.update_attributes!(status: 'sent', sent_by_id: user.id, sent_on: Date.current)
+        @invoice.update_attributes!(status: 'unpaid', sent_by_id: user.id, sent_on: Date.current)
       rescue Exception => e
         @error = e
         raise ActiveRecord::Rollback

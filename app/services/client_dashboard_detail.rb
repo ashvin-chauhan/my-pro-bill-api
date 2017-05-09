@@ -25,8 +25,7 @@ class ClientDashboardDetail
     invoices = {
       "unsent": invoices['unsent'] || 0.0,
       "paid": invoices['paid'] || 0.0,
-      "unpaid": (invoices['unpaid'] || 0.0) + (invoices['sent'] || 0.0),
-      "sent": invoices['sent'] || 0.0,
+      "unpaid": invoices['unpaid'] || 0.0,
       "overdue": invoices['overdue'] || 0.0
     } if invoices.present?
 

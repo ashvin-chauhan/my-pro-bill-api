@@ -16,7 +16,7 @@ class Invoice < ApplicationRecord
   belongs_to :sent_by, class_name: "User"
   belongs_to :customer, class_name: "User"
 
-  enum status: { unsent: 0, paid: 1, unpaid: 2, sent: 3, overdue: 4 }
+  enum status: { unsent: 0, paid: 1, unpaid: 2, overdue: 3 }
 
   # Scopes
   scope :overdue_invoices, -> { joins(:service_ticket).where("service_tickets.due_date < ? AND invoices.status != ? AND invoices.status != ? ", Date.today, Invoice.statuses[:paid], Invoice.statuses[:overdue]) }
@@ -48,7 +48,7 @@ class Invoice < ApplicationRecord
 
   # callbacks
   def update_service_ticket_status
-    if self.sent? || self.paid?
+    if self.unpaid? || self.paid?
       service_ticket.processed!
     end
   end
