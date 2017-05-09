@@ -47,7 +47,19 @@ class UsersController < ApplicationController
 
   # GET  /clients/:user_id/users
   def client_users
-    render json: @client.workers.includes(:roles), include: ['roles'], :except => [:username, :company, :subdomain], status: 200
+    users = @client.workers.page(
+        params[:page]
+      ).per(
+        params[:per_page]
+      )
+
+    json_response({
+      success: true,
+      data: {
+        users: users.includes(:roles).as_json(include: ['roles'], :except => [:username, :company, :subdomain])
+      },
+      meta: meta_attributes(users)
+    }, 200)
   end
 
   # GET  /users/:id

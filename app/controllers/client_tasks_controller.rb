@@ -5,7 +5,29 @@ class ClientTasksController < ApplicationController
 
   # GET /clients/:user_id/tasks
   def index
-    render json: array_serializer.new(@client.client_tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer), status: 200
+    client_tasks = @client.client_tasks.page(params[:page]).per(params[:per_page])
+
+    json_response({
+      success: true,
+      data: {
+        client_task: array_serializer.new(client_tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer) 
+      },
+      meta: meta_attributes(client_tasks)
+    }, 200)
+  end
+
+  # GET /clients/:user_id/tasks/search
+  def search
+    client_tasks = @client.client_tasks.filter(class_search_params).page(params[:page]).per(params[:per_page])
+    client_tasks = client_tasks.where(status: params[:status]) if params[:status].present?
+
+    json_response({
+      success: true,
+      data: {
+        client_task: array_serializer.new(client_tasks.includes(:assign_to, :for_customer, :created_by, :mark_as_completed_by), serializer: ClientTasks::TaskSerializer)
+      },
+      meta: meta_attributes(client_tasks)
+    }, 200)
   end
 
   # POST /clients/:user_id/tasks
@@ -48,20 +70,10 @@ class ClientTasksController < ApplicationController
     head 200
   end
 
-  # GET /clients/:user_id/tasks/search
-  def search
-    if params[:status].present?
-      client_tasks =  @client.client_tasks.where(status: params[:status])
-      client_tasks = client_tasks.filter(class_search_params)
-    else
-      client_tasks = @client.client_tasks.filter(class_search_params)
-    end
-    render json: array_serializer.new(client_tasks, serializer: ClientTasks::TaskSerializer), status: 200
+  def class_search_params
+    params.slice(:created_at, :assign_to_id)
   end
 
-  def class_search_params
-    params.slice(:created_at,:assign_to_id)
-  end
   private
 
   def get_task
