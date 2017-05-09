@@ -52,6 +52,7 @@ class UsersController < ApplicationController
       ).per(
         params[:per_page]
       )
+    users = users.where(active: params[:active]) if params[:active].present?
 
     json_response({
       success: true,
