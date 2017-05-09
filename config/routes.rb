@@ -64,6 +64,12 @@ Rails.application.routes.draw do
       get "/invoices" => "users#invoices"
     end
 
+    resources :reports, only: [] do
+      collection do
+        get "/summary" => "reports#summary"
+      end
+    end
+
     get "/customers" => "users#customers"
     get "/users" => "users#client_users"
     get "/invoices" => "invoices#index"

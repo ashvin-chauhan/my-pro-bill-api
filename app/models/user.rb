@@ -31,7 +31,7 @@ class User < ActiveRecord::Base
   has_many  :oauth_access_tokens, dependent: :destroy, foreign_key: :resource_owner_id
   has_one   :customer, dependent: :destroy
   has_many  :expense_categories, dependent: :destroy,foreign_key: :client_id
-  has_many  :client_expenses, dependent: :destroy,foreign_key: :client_id
+  has_many  :client_expenses, dependent: :destroy, foreign_key: :client_id
 
   # Get list of clients of specific customer
   has_many  :customers_clients, class_name: "ClientsCustomer", foreign_key: "customer_id", dependent: :destroy
