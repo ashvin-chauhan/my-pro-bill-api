@@ -14,13 +14,13 @@ class CheckinCheckout
       create_time_tracker
     end
 
-    TimeTrackers::WorkerTrackerAttributesSerializer.new(today_tracker).as_json
+    TimeTrackers::CheckinCheckoutAttributesSerializer.new(today_tracker).as_json
   end
 
   def checkout
     update_checkout_timetracker
 
-    TimeTrackers::WorkerTrackerAttributesSerializer.new(today_tracker, time_log_id: time_log_id).as_json
+    TimeTrackers::CheckinCheckoutAttributesSerializer.new(today_tracker, time_log_id: time_log_id).as_json
   end
 
   private

@@ -1,7 +1,7 @@
-class TimeTrackers::WorkerTrackerAttributesSerializer < ActiveModel::Serializer
-  attributes :id, :worker_id, :date, :current_status, :time_log
+class TimeTrackers::CheckinCheckoutAttributesSerializer < ActiveModel::Serializer
+  attributes :id, :worker_id, :date, :current_status, :time_log_attributes
 
-  def time_log
+  def time_log_attributes
     if instance_options[:time_log_id]
       time_log = object.time_logs.find(instance_options[:time_log_id])
     else

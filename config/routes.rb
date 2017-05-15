@@ -50,8 +50,7 @@ Rails.application.routes.draw do
         get "/tasks" => 'client_tasks#worker_tasks'
       end
       resources :worker_tasks, path: "/tasks", except: [:create,:destroy]
-      resources :time_trackers, only: [] do
-      end
+      resources :time_trackers
       post 'checkin' => "time_trackers#checkin"
       put 'checkout' => "time_trackers#checkout"
     end
